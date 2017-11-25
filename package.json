@@ -16,6 +16,7 @@
     "build": "tsc",
     "test": "mocha -r ts-node/register test.ts",
     "E2E": "rm -rf E2E/testproject/src/scripts/dist && cp -a dist E2E/testproject/src/scripts && cd E2E/testproject && npm install && npm run build && cd ../.. && ./node_modules/cucumber/bin/cucumber.js E2E/features/CoreRTC_V1.feature",
+    "E2E-clean":"cp -a dist E2E/testproject/src/scripts && cd E2E/testproject && npm install && npm run build && cd ../.. && ./node_modules/cucumber/bin/cucumber.js E2E/features/CoreRTC_V1.feature",
     "E2E-win": "node node_modules\\cucumber\\bin\\cucumber.js E2E\\features\\CoreRTC_V1.feature"
   },
   "license": "MIT",
