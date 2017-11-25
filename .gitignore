@@ -3,7 +3,6 @@ node_modules
 npm-debug.log
 typings
 E2E/hiptest-publisher.conf
-E2E/conf/single.conf.js
 E2E/conf/local.conf.js
 local.log
 browserstack.err
