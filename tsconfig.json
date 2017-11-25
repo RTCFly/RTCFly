@@ -2,11 +2,6 @@
   "compilerOptions": {
     "outDir": "./dist",
     "target": "es5",
-    "lib":["es2015"],
-    "module":"es2015",
-    "moduleResolution":"node"
-  },
-  "errorReporting":{
-    "excludeCodes":[2304]
+    "lib":["es2015"]
   }
 }
