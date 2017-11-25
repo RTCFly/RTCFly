@@ -29,6 +29,10 @@ var myHooks = function () {
     caps['browserstack.user'] = username;
     caps['browserstack.key'] = accessKey;
     caps['browserstack.debug'] = debug; 
+    if(process.env.BROWSERSTACK_LOCAL_IDENTIFIER){
+    caps['browserstack.localIdentifier'] = process.env.BROWSERSTACK_LOCAL_IDENTIFIER;
+      
+    }
     if(caps["browserstack.local"]){
       // Code to start browserstack local before start of test and stop browserstack local after end of test
       bs_local = new browserstack.Local();
