@@ -1,5 +1,3 @@
-import {IHandler} from  '../../interfaces/IHandler';
-
 export default class FakeHandler implements IHandler {
     onReceivePhoneCall(fields: any): void {
     }

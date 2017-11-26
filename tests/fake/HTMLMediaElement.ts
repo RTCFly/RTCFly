@@ -1,6 +1,3 @@
-
-import {IHTMLMediaElement} from "../../interfaces/IHTMLMediaElement";
-import {IMediaStream} from "../../interfaces/IMediaStream";
 export default class HTMLMediaElement implements IHTMLMediaElement {
     paused: boolean;
     muted: boolean;

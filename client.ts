@@ -1,12 +1,6 @@
 import VideoWrapper from './VideoWrapper';
 import {Message, MessageType, MessageDirection} from './entities/Message';
 
-import {IRTC} from './interfaces/IRTC';
-import {IPeerConnection} from './interfaces/IPeerConnection';
-import {IRTCFactory} from './interfaces/IRTCFactory';
-import {IMediaStream} from './interfaces/IMediaStream';
-import {IHandler} from './interfaces/IHandler';
-import {IHTMLMediaElement} from "./interfaces/IHTMLMediaElement";
 
 class Client {
 

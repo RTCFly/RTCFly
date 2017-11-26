@@ -1,5 +1,4 @@
-import {IHTMLMediaElement} from "./interfaces/IHTMLMediaElement";
-import {IMediaStream} from "./interfaces/IMediaStream";
+
 export default class Video {
     /**
      * Wrap video to allow stabler manipulation

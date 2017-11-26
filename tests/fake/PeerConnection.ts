@@ -1,5 +1,4 @@
-import {IPeerConnection} from "../../interfaces/IPeerConnection";
-import {IMediaStream} from "../../interfaces/IMediaStream";
+
 export default class PeerConnection implements IPeerConnection{
 
     constructor(peerConnetion:any){

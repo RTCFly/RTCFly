@@ -1,4 +1,4 @@
-export interface IHandler {
+declare interface IHandler {
     call(_id: string, callback: Function) : void;
     endPhoneCall(onError: Function) : void;
     answerPhoneCall(onError: Function) : void;

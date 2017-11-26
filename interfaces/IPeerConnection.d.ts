@@ -1,5 +1,4 @@
-import {IMediaStream} from "./IMediaStream";
-export interface IPeerConnection {
+declare interface IPeerConnection {
     setLocalDescription(sessionDescription: Object): Promise<any>;
     setRemoteDescription(sessionDescription: Object): Promise<any>;
     addIceCandidate(rtcIceCandidate: Object): Promise<any>;
