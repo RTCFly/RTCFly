@@ -1,5 +1,5 @@
-[![Travis CI](https://travis-ci.org/elmarti/corertc.svg?branch=master)](https://travis-ci.org/elmarti/corertc)
-[![Coverage Status](https://coveralls.io/repos/github/elmarti/corertc/badge.svg?branch=master)](https://coveralls.io/github/elmarti/corertc?branch=master)
+[![Travis CI](https://travis-ci.org/RTCFly/RTCFly.svg?branch=master)](https://travis-ci.org/RTCFly/RTCFly)
+[![Coverage Status](https://coveralls.io/repos/github/RTCFly/RTCFly/badge.svg?branch=master)](https://coveralls.io/github/RTCFly/RTCFly?branch=master)
 [![Hiptest Status](https://hiptest.net/badges/folder/373348)](https://hiptest.net/app/projects/66473/test-plan/folders/373348)
 
 # CoreRTC [COMING SOON]
