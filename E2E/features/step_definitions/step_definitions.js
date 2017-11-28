@@ -13,7 +13,8 @@ var accessKey = process.env.BROWSERSTACK_ACCESS_KEY || config.key;
 module.exports = function() {
     this.Before(function(scenario) {
         this.actionwords = Object.create(require('./actionwords.js').Actionwords);
-        this.driver.get("http://localhost:2344/");
+       
+        
     });
 
 
