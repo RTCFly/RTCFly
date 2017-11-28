@@ -11,16 +11,12 @@ var accessKey = process.env.BROWSERSTACK_ACCESS_KEY || config.key;
 var debug = config.debug;
 
 var createBrowserStackSession = function(config, caps) {
-  console.log("go go go", config, caps)
   return new webdriver.Builder().
   usingServer('http://hub-cloud.browserstack.com/wd/hub').
   withCapabilities(caps).
   build();
 }
 
-function startWebpackServer(callback) {
-
-}
 var myHooks = function() {
   console.log
   var bs_local = null;
@@ -31,10 +27,6 @@ var myHooks = function() {
     caps['browserstack.user'] = username;
     caps['browserstack.key'] = accessKey;
     caps['browserstack.debug'] = debug;
-    // if (process.env.BROWSERSTACK_LOCAL_IDENTIFIER) {
-    //   caps['browserstack.localIdentifier'] = process.env.BROWSERSTACK_LOCAL_IDENTIFIER;
-
-    // }
     if (caps["browserstack.local"]) {
       // Code to start browserstack local before start of test and stop browserstack local after end of test
       bs_local = new browserstack.Local();
