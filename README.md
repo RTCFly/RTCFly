@@ -1,7 +1,7 @@
 [![Travis CI](https://travis-ci.org/RTCFly/RTCFly.svg?branch=master)](https://travis-ci.org/RTCFly/RTCFly)
 [![Coverage Status](https://coveralls.io/repos/github/RTCFly/RTCFly/badge.svg?branch=master)](https://coveralls.io/github/RTCFly/RTCFly?branch=master)
 [![Hiptest Status](https://hiptest.net/badges/folder/373348)](https://hiptest.net/app/projects/66473/test-plan/folders/373348)
-
+[![Known Vulnerabilities](https://snyk.io/test/github/rtcfly/rtcfly/badge.svg)](https://snyk.io/test/github/rtcfly/rtcfly)
 # CoreRTC [COMING SOON]
 At present, this module doesn't work, but it will soon!
 
