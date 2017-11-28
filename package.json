@@ -44,5 +44,9 @@
   "keywords": [
     "webrtc"
   ],
-  "analyze": true
+  "analyze": true,
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
 }
