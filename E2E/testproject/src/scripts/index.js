@@ -43,5 +43,18 @@ document.getElementById('call-user2').addEventListener('click', function() {
 });
 
 document.getElementById('call-user1').addEventListener('click', function() {
-    coreTwo.call("this doesn't matter");
+    coreTwo.call("this doesn't matter", user2Local, user2Remote);
+});
+
+document.getElementById('answer-user1').addEventListener('click', function() {
+    coreOne.answerPhoneCall(user1Local, user1Remote);
+});
+document.getElementById('answer-user2').addEventListener('click', function() {
+    coreTwo.answerPhoneCall(user2Local, user2Remote);
+});
+document.getElementById('reject-user1').addEventListener('click', function() {
+    coreOne.answerPhoneCall(user1Local, user1Remote);
+});
+document.getElementById('reject-user2').addEventListener('click', function() {
+    coreTwo.answerPhoneCall(user2Local, user2Remote);
 });

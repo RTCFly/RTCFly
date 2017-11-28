@@ -36,6 +36,10 @@ class Handler {
     emitSenderDescription(sessionDescription){
         
     }
+    rejectCall(){
+        this.document.getElementById(this.userName + "-state").innerHTML = "Rejector";
+        this.otherUserCore.onTargetReject(); 
+    }
     onReceivePhoneCall(fields){
         console.log("onReceivePhoneCall")
         this.document.getElementById(this.userName + "-state").innerHTML = "Recieving call";

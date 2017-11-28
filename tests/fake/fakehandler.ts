@@ -4,7 +4,9 @@ export default class FakeHandler implements IHandler {
 
     onTargetAccept(fields: any): void {
     }
-
+    rejectCall(): void {
+        
+    }
 
     endPhoneCall(onError: Function): void {
     }

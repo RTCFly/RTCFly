@@ -40,7 +40,11 @@ class Client {
             this._remoteVideo = new VideoWrapper(remote);
         this._handler.call(_id, this._handler.onCallInitialised);
     }
-
+    public rejectCall(){
+        this._localVideo = null; 
+        this._remoteVideo = null; 
+        this._handler.rejectCall(); 
+    }
     public handleSenderStream(message: Message): void {
         if (message.Type === MessageType.Candidate) {
             if (this.peerConnection) {
@@ -232,6 +236,9 @@ class Client {
 
     onPeerConnectionCreated() {
 
+    }
+    onTargetReject(){
+        
     }
 
 
