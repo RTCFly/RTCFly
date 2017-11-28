@@ -5,7 +5,7 @@
   "description": "The perfect guts for any WebRTC application",
   "repository": {
     "type": "git",
-    "url": "https://github.com/elmarti/corertc"
+    "url": ""
   },
   "bugs": {
     "url": "https://github.com/elmarti/corertc/issues"
@@ -14,9 +14,9 @@
   "scripts": {
     "prepublish": "npm build",
     "build": "tsc",
-    "test": "mocha -r ts-node/register test.ts",
+    "test": "nyc mocha -r ts-node/register test.ts",
     "E2E": "rm -rf E2E/testproject/src/scripts/dist && cp -a dist E2E/testproject/src/scripts && cd E2E/testproject && npm install && npm run build && cd ../.. && ./node_modules/cucumber/bin/cucumber.js E2E/features",
-    "E2E-clean":"cp -a dist E2E/testproject/src/scripts && cd E2E/testproject && npm install && npm run build && cd ../.. && ./node_modules/cucumber/bin/cucumber.js E2E/features/RTCFly_V1.feature",
+    "E2E-clean": "cp -a dist E2E/testproject/src/scripts && cd E2E/testproject && npm install && npm run build && cd ../.. && ./node_modules/cucumber/bin/cucumber.js E2E/features/RTCFly_V1.feature",
     "E2E-win": "node node_modules\\cucumber\\bin\\cucumber.js E2E\\features\\RTCFly_V1.feature"
   },
   "license": "MIT",
@@ -31,12 +31,16 @@
     "browserstack-local": "^1.3.0",
     "chai": "^4.1.2",
     "chai-spies": "^0.7.1",
+    "coveralls": "^3.0.0",
     "cucumber": "^1.3.3",
     "cucumber-assert": "^2.0.0",
     "express": "^4.16.2",
+    "istanbul": "^0.4.5",
     "mocha": "^3.5.3",
+    "nyc": "^11.3.0",
     "selenium-webdriver": "^3.6.0",
     "sinon": "^3.3.0",
+    "source-map-support": "^0.5.0",
     "ts-node": "^3.3.0",
     "typescript": "^2.5.3",
     "typings": "^2.1.1"
@@ -45,8 +49,17 @@
     "webrtc"
   ],
   "analyze": true,
-  "repository": {
-    "type": "git",
-    "url": ""
+  "nyc": {
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "exclude": [
+      "**/*.d.ts"
+    ],
+    "reporter": [
+      "html"
+    ],
+    "all": false
   }
 }

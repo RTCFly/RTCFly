@@ -7,3 +7,4 @@ E2E/conf/local.conf.js
 local.log
 browserstack.err
 dist
+coverage
