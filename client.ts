@@ -9,8 +9,8 @@ class Client {
     private _rtcFactory: IRTCFactory;
     private _localVideo: VideoWrapper;
     private _remoteVideo: VideoWrapper;
-    private _retryCount: Number;
-    private _retryLimit: Number;
+    private _retryCount: number;
+    private _retryLimit: number;
 
     public peerConnection: IPeerConnection;
     private _RTCConfiguration: Object;
@@ -99,14 +99,8 @@ class Client {
             this.createCallSession();
         }
     }
-
-    private setPeerConnectionCallbacks(): void {
-        this.peerConnection.onicecandidate = function (event: any) {
-            this._handler.emitIceCandidate(event.candidate);
-        }.bind(this);
-        this.peerConnection.oniceconnectionstatechange = function (event: any) {
-            if (event.target.iceConnectionState === "failed") {
-                this.peerConnection = undefined;
+    private iceConnectionStateFailed(): void {
+           this.peerConnection = undefined;
                 if (this._retryCount < this._retryLimit) {
                     this._rtc.getUserMedia().then((stream: any) => {
                         this._retryCount++;
@@ -119,7 +113,6 @@ class Client {
 
                     }).catch((err: Error) => {
                         this.onError(err);
-
                     });
 
                 } else {
@@ -127,6 +120,14 @@ class Client {
                     this.onError(error);
                 }
 
+    }
+    private setPeerConnectionCallbacks(): void {
+        this.peerConnection.onicecandidate = function (event: any)  {
+            this._handler.emitIceCandidate(event.candidate);
+        }.bind(this);
+        this.peerConnection.oniceconnectionstatechange = function (event: any) {
+            if (event.target.iceConnectionState === "failed") {
+             this.iceConnectionStateFailed(); 
             }
         }.bind(this);
         this.peerConnection.onaddstream = function (stream: any) {
