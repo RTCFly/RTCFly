@@ -8,3 +8,5 @@ local.log
 browserstack.err
 dist
 coverage
+browserstack.err
+local.log
