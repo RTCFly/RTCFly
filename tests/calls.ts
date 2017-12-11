@@ -1,5 +1,5 @@
 import FakeHandler from './fake/fakehandler';
-import FakeRTC from './fake/fakeRTC';
+import rtc from './fake/fakeRTC';
 import HTMLMediaElement from './fake/HTMLMediaElement';
 
 import Client from '../client';
@@ -10,7 +10,6 @@ import RTCFactory from "./fake/RTCFactory";
 // if you used the '@types/mocha' method to install mocha type definitions, uncomment the following line
 // import 'mocha';
 const handler = new FakeHandler();
-const rtc = new FakeRTC();
 const rtcFactory = new RTCFactory();
 
 export default (expect :any, assert : any) => {
@@ -39,7 +38,7 @@ export default (expect :any, assert : any) => {
         describe('call a remote user using their _id', () => {
 
             for (let i = 0; i < params.length; i++) {
-                const client = new Client(handler, rtc, rtcFactory);
+                const client = new Client(handler, rtc);
                 let param: any = params[i];
                 const spy = sinon.spy(handler, 'call');
                 client.call(param._id, param.local, param.remote);
@@ -70,7 +69,7 @@ export default (expect :any, assert : any) => {
 
         describe('answering a phone call', () => {
             for (let i = 0; i < params.length; i++) {
-                const client = new Client(handler, rtc, rtcFactory);
+                const client = new Client(handler, rtc);
                 let param: any = params[i];
                 const spy = sinon.spy(handler, 'answerPhoneCall');
                 client.answerPhoneCall(param.local, param.remote);
@@ -100,7 +99,7 @@ export default (expect :any, assert : any) => {
         });
 
         describe('ending a phone call', ()=>{
-            const client = new Client(handler, rtc, rtcFactory);
+            const client = new Client(handler, rtc);
             const endPhoneCallSpy = sinon.spy(handler, 'endPhoneCall');
             client.endPhoneCall();
             it('it should call the handler.endPhoneCall callback', () => {

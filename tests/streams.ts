@@ -1,18 +1,15 @@
 import FakeHandler from './fake/fakehandler';
-import FakeRTC from './fake/fakeRTC';
+import rtc from './fake/fakeRTC';
 import HTMLMediaElement from './fake/HTMLMediaElement';
 import PeerConnection from './fake/PeerConnection';
 import Client from '../client';
 
 import * as sinon from 'sinon';
-import RTCFactory from "./fake/RTCFactory";
 import {Message, MessageDirection, MessageType}from '../entities/Message';
 
 // if you used the '@types/mocha' method to install mocha type definitions, uncomment the following line
 // import 'mocha';
 const handler = new FakeHandler();
-const rtc = new FakeRTC();
-const rtcFactory = new RTCFactory();
 
 export default (expect :any, assert : any) => {
   describe("streams", ()=>{
@@ -40,7 +37,7 @@ export default (expect :any, assert : any) => {
               }
           ];
           for (let i = 0; i < testSets.length; i++) {
-              const client = new Client(handler, rtc, rtcFactory);
+              const client = new Client(handler, rtc);
               const peerConnectionStub = new PeerConnection([]);
               client.peerConnection = peerConnectionStub;
               it(testSets[i].description, () => {
@@ -64,7 +61,7 @@ export default (expect :any, assert : any) => {
 
       describe('the handleTargetStream method should call the correct methods', () => {
           describe('iceCandidate message',()=>{
-              const client = new Client(handler, rtc, rtcFactory);
+              const client = new Client(handler, rtc);
               const peerConnectionStub = new PeerConnection([]);
               client.peerConnection = peerConnectionStub;
               const message = {

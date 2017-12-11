@@ -1,5 +1,5 @@
 import FakeHandler from './tests/fake/fakehandler';
-import FakeRTC from './tests/fake/fakeRTC';
+import rtc from './tests/fake/fakeRTC';
 import HTMLMediaElement from './tests/fake/HTMLMediaElement';
 import FakeRTCFactory from './tests/fake/RTCFactory';
 
@@ -20,10 +20,8 @@ const assert = chai.assert;
 // if you used the '@types/mocha' method to install mocha type definitions, uncomment the following line
 // import 'mocha';
 const handler = new FakeHandler();
-const rtc = new FakeRTC();
-const rtcFactory = new RTCFactory();
 describe('client class', () => {
-    const testClient = new Client(handler, rtc, rtcFactory);
+    const testClient = new Client(handler, rtc);
     it('should define client class object', () => {
         expect(testClient).to.not.be.an('undefined');
     });

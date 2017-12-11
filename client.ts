@@ -5,8 +5,6 @@ import {Message, MessageType, MessageDirection} from './entities/Message';
 class Client {
 
     public _handler: IHandler;
-    private _rtc: IRTC;
-    private _rtcFactory: IRTCFactory;
     private _localVideo: VideoWrapper;
     private _remoteVideo: VideoWrapper;
     private _retryCount: number;
@@ -14,12 +12,11 @@ class Client {
 
     public peerConnection: IPeerConnection;
     private _RTCConfiguration: Object;
+    private _rtc: IRTC;
 
-
-    constructor(handler: IHandler, rtc: IRTC, rtcFactory: IRTCFactory) {
+    constructor(handler: IHandler, rtc: IRTC) {
         this._handler = handler;
-        this._rtc = rtc;
-        this._rtcFactory = rtcFactory;
+        this._rtc = rtc; 
     }
 
 
@@ -27,7 +24,7 @@ class Client {
      * Call allows you to call a remote user using their userId
      * @param _id {string}
      * @param local {IHTMLMediaElement}
-     * @remote remote {IHTMLMediaElement}
+     * @param remote {IHTMLMediaElement}
      */
     public call(_id: string, local: IHTMLMediaElement, remote: IHTMLMediaElement): void {
         this._retryCount = 0;
@@ -40,11 +37,20 @@ class Client {
             this._remoteVideo = new VideoWrapper(remote);
         this._handler.call(_id, this._handler.onCallInitialised);
     }
+    /**
+     * Reject a new phone call that the user is recieving
+     * 
+     * */
     public rejectCall(){
         this._localVideo = null; 
         this._remoteVideo = null; 
         this._handler.rejectCall(); 
     }
+    /**
+     * handle the stream on the caller side
+     * @param message {Message}
+     * 
+     */
     public handleSenderStream(message: Message): void {
         if (message.Type === MessageType.Candidate) {
             if (this.peerConnection) {
@@ -55,7 +61,10 @@ class Client {
             this.peerConnection.setRemoteDescription(message.data).catch(this.onError);
         }
     }
-
+    /**
+     * Event handler for when the target accepts the call
+     * 
+     */
     public  handleTargetAccept() {
         this._rtc.getUserMedia().then((stream: any) => {
             if (this._localVideo) {
@@ -68,7 +77,11 @@ class Client {
         });
 
     }
-
+    /**
+     * handle the stream on the target
+     * @param message {Message}
+     * 
+     */
     public handleTargetStream(message: Message) {
         if (message.Type === MessageType.Candidate) {
             if (this.peerConnection) {
@@ -88,7 +101,8 @@ class Client {
     }
 
     private setupPeerConnection(stream: IMediaStream, remoteDescription?: Object): void {
-        this.peerConnection = this._rtcFactory.createPeerConnection(this._RTCConfiguration);
+        console.log(this._rtc);
+        this.peerConnection = this._rtc.createPeerConnection(this._RTCConfiguration);
         this._handler.onPeerConnectionCreated();
         this.setPeerConnectionCallbacks();
         this.peerConnection.addStream(stream);
@@ -204,7 +218,10 @@ class Client {
             this.onError(err);
         });
     }
-
+    /**
+     * Get the VideoWrapper for the local video
+     * @returns {VideoWrapper}
+     */
     public getLocalVideo(): VideoWrapper {
         if (this._localVideo) {
             return this._localVideo;
@@ -213,7 +230,10 @@ class Client {
             return undefined;
         }
     }
-
+    /**
+     * Get the VideoWrapper for the remote video
+     * @returns {VideoWrapper}
+     */
     public getRemoteVideo(): VideoWrapper {
         if (this._remoteVideo) {
             return this._remoteVideo;
