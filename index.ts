@@ -6,7 +6,7 @@ import Server from './server';
 import {MessageType, Message, MessageDirection} from './entities/Message';
 
 class RTC implements IRTC{
-    public getUserMedia:Function;
+    public getUserMedia;
     public RTCPeerConnection;
     constructor(getUserMedia, RTCPeerConnection){
         this.getUserMedia = getUserMedia; 

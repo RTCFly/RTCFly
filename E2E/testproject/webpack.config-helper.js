@@ -53,14 +53,6 @@ module.exports = (options) => {
   if (options.isProduction) {
     webpackConfig.entry = ['./src/scripts/index'];
 
-    webpackConfig.plugins.push(
-      new Webpack.optimize.UglifyJsPlugin({
-        compressor: {
-          warnings: false
-        }
-      }),
-      ExtractSASS
-    );
 
     webpackConfig.module.rules.push({
       test: /\.s?css/i,

@@ -12,7 +12,7 @@
   },
   "main": "dist/index.js",
   "scripts": {
-    "prepublish": "npm build",
+    "prepublish": "npm run build",
     "build": "tsc",
     "test": "mocha -r ts-node/register test.ts",
     "E2E": "rm -rf E2E/testproject/src/scripts/dist && cp -a dist E2E/testproject/src/scripts && cd E2E/testproject && npm install && npm run build && cd ../.. && ./node_modules/cucumber/bin/cucumber.js E2E/features",
@@ -24,7 +24,7 @@
     "@types/node": "^8.0.31",
     "@types/sinon": "^2.3.5",
     "chai-spies": "^0.7.1",
-    "flyadapter": "0.0.1"
+    "flyadapter": "0.0.11"
   },
   "devDependencies": {
     "@types/chai": "^4.0.4",
