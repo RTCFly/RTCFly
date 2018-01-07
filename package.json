@@ -24,7 +24,7 @@
     "@types/node": "^8.0.31",
     "@types/sinon": "^2.3.5",
     "chai-spies": "^0.7.1",
-    "flyadapter": "0.0.18"
+    "flyadapter": "0.0.17-alpha"
   },
   "devDependencies": {
     "@types/chai": "^4.0.4",
