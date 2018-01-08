@@ -1,2 +1,3 @@
 exclude_patterns:
 - "E2E/"
+- "tests/"
