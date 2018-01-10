@@ -17,7 +17,7 @@ class RTC implements IRTC{
     }
 }
 
-const client = (handler) => new Client(handler, new RTC(getUserMedia, RTCPeerConnection));
+const client = (settings) => new Client(settings, new RTC(getUserMedia, RTCPeerConnection));
 //const server = (handler) => Server(handler);
 export {
     client,

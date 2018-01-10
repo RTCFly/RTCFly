@@ -1,22 +1,36 @@
 import VideoWrapper from './VideoWrapper';
 import {Message, MessageType, MessageDirection} from './entities/Message';
 
+class ClientEvents {
+    public eventMap: any; 
+    constructor(){
+        this.eventMap = {};
+    }
+    callEvent(event){
+        if(this.eventMap[event]){
+            return this.eventMap[event];
+        } else {
+            return function(){}
+        }
+    }
+    
+}
 
 class Client {
 
-    public _handler: IHandler;
     private _localVideo: VideoWrapper;
     private _remoteVideo: VideoWrapper;
     private _retryCount: number;
     private _retryLimit: number;
+    private events: ClientEvents;
 
     public peerConnection: IPeerConnection;
     private _RTCConfiguration: Object;
     private _rtc: IRTC;
 
-    constructor(handler: IHandler, rtc: IRTC) {
-        this._handler = handler;
+    constructor(settings: any, rtc: IRTC) {
         this._rtc = rtc; 
+        this.events = new ClientEvents(); 
     }
 
 
@@ -35,7 +49,7 @@ class Client {
             this._localVideo = new VideoWrapper(local);
         if (remote)
             this._remoteVideo = new VideoWrapper(remote);
-        this._handler.call(_id, this._handler.onCallInitialised);
+        this.events.callEvent("callInitialized")(_id);
     }
     /**
      * Reject a new phone call that the user is recieving
@@ -44,7 +58,7 @@ class Client {
     public rejectCall(){
         this._localVideo = null; 
         this._remoteVideo = null; 
-        this._handler.rejectCall(); 
+        this.events.callEvent("rejectCall")(); 
     }
     /**
      * handle the stream on the caller side
@@ -54,11 +68,11 @@ class Client {
     public handleSenderStream(message: Message): void {
         if (message.Type === MessageType.Candidate) {
             if (this.peerConnection) {
-                this.peerConnection.addIceCandidate(message.data).catch(this.onError);
+                this.peerConnection.addIceCandidate(message.data).catch(this.events.callEvent("error"));
             }
         }
         if (message.Type === MessageType.SessionDescription) {
-            this.peerConnection.setRemoteDescription(message.data).catch(this.onError);
+            this.peerConnection.setRemoteDescription(message.data).catch(this.events.callEvent("error"));
         }
     }
     /**
@@ -73,7 +87,7 @@ class Client {
             }
             this.setupPeerConnection(stream);
         }).catch((err: Error) => {
-            this.onError(err);
+            this.events.callEvent("error")(err);
         });
 
     }
@@ -85,7 +99,7 @@ class Client {
     public handleTargetStream(message: Message) {
         if (message.Type === MessageType.Candidate) {
             if (this.peerConnection) {
-                this.peerConnection.addIceCandidate(message.data).catch(this.onError);
+                this.peerConnection.addIceCandidate(message.data).catch(this.events.callEvent("error"));
             }
         }
         if (message.Type === MessageType.SessionDescription) {
@@ -96,14 +110,14 @@ class Client {
                 this._localVideo.play();
             }
             this.setupPeerConnection(stream, message.data);
-            }).catch(this.onError);
+            }).catch(this.events.callEvent("error"));
         }
     }
 
     private setupPeerConnection(stream: IMediaStream, remoteDescription?: Object): void {
         console.log(this._rtc);
         this.peerConnection = this._rtc.createPeerConnection(this._RTCConfiguration);
-        this._handler.onPeerConnectionCreated();
+        this.events.callEvent("peerConnectionCreated")();
         this.setPeerConnectionCallbacks();
         this.peerConnection.addStream(stream);
         if (remoteDescription) {
@@ -125,19 +139,17 @@ class Client {
                         }
                         this.setupPeerConnection(stream);
 
-                    }).catch((err: Error) => {
-                        this.onError(err);
-                    });
+                    }).catch(this.events.callEvent("error"));
 
                 } else {
                     const error = new Error("Could not establish connection");
-                    this.onError(error);
+                    this.events.callEvent("error")(error);
                 }
 
     }
     private setPeerConnectionCallbacks(): void {
         this.peerConnection.onicecandidate = function (event: any)  {
-            this._handler.emitIceCandidate(event.candidate);
+            this.events.callEvent("emitIceCandidate")(event.candidate);
         }.bind(this);
         this.peerConnection.oniceconnectionstatechange = function (event: any) {
             if (event.target.iceConnectionState === "failed") {
@@ -165,7 +177,7 @@ class Client {
             this._localVideo = new VideoWrapper(local);
         if (remote)
             this._remoteVideo = new VideoWrapper(remote);
-        this._handler.answerPhoneCall(this.onError);
+        this.events.callEvent("answerPhoneCall")(this.events.callEvent("error"));
     }
 
 
@@ -173,15 +185,7 @@ class Client {
      * End the current phone call
      */
     public endPhoneCall(): void {
-        this._handler.endPhoneCall(this.onError);
-    }
-
-    /**
-     * Can be overridden
-     * @param err {Error}
-     */
-    public onError(err: Error): void {
-
+        this.events.callEvent("endPhoneCall")();
     }
 
     /**
@@ -196,14 +200,14 @@ class Client {
             this.peerConnection.createAnswer().then((answer: Object) => {
 
                 this.peerConnection.setLocalDescription(answer).catch((setLocalDescriptionError: Error) => {
-                    this.onError(setLocalDescriptionError);
+                    this.events.callEvent("error")(setLocalDescriptionError);
                 });
-                this._handler.emitTargetAnswer(answer);
+                this.events.callEvent("emitTargetAnswer")(answer);
             }).catch((createAnswerError: Error) => {
-                this.onError(createAnswerError);
+                this.events.callEvent("error")(createAnswerError);
             });
         }).catch((setRemoteDescriptionError: Error) => {
-            this.onError(setRemoteDescriptionError);
+            this.events.callEvent("error")(setRemoteDescriptionError);
         });
 
 
@@ -212,10 +216,10 @@ class Client {
     private createCallSession() {
         var offer = this.peerConnection.createOffer().then((offer:any)=>{
             this.peerConnection.setLocalDescription(offer);
-            this._handler.emitSenderDescription(offer);
+            this.events.callEvent("emitSenderDescription")(offer);
             this.peerConnection.setLocalDescription(offer);
         }).catch((err:Error)=>{
-            this.onError(err);
+            this.events.callEvent("error")(err);
         });
     }
     /**
@@ -241,25 +245,9 @@ class Client {
             return undefined;
         }
     }
-
-
-    onTargetAccept() {
-
-    }
-
-    onReceivePhoneCall(fields: any) {
-
-    }
-
-    onTerminateCall() {
-
-    }
-
-    onPeerConnectionCreated() {
-
-    }
-    onTargetReject(){
-        
+    
+    public on(eventName:string, action:Function) {
+        this.events.eventMap[eventName] = action; 
     }
 
 
