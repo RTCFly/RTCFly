@@ -9,14 +9,10 @@ import * as sinon from 'sinon';
 // import 'mocha';
 const window = {
     fakeCallback:function(){
+        console.log("dave", arguments)
     }
 };
-const handler = {
-    onCallInitialised(){}, 
-    call(){},
-    answerPhoneCall(){},
-    endPhoneCall(){}
-};
+
 export default (expect :any, assert : any) => {
     describe('calls',() => {
         const params = [{
@@ -76,9 +72,10 @@ export default (expect :any, assert : any) => {
 
         describe('answering a phone call', () => {
             for (let i = 0; i < params.length; i++) {
-                const client = new Client(handler, rtc);
+                const client = new Client({}, rtc);
                 let param: any = params[i];
-                const spy = sinon.spy(handler, 'answerPhoneCall');
+                const spy = sinon.spy(window, 'fakeCallback');
+                client.on("answerPhoneCall", window.fakeCallback);
                 client.answerPhoneCall(param.local, param.remote);
                 describe("with " + param.description, () => {
                     it('should correctly initialise the local video', () => {
@@ -100,19 +97,20 @@ export default (expect :any, assert : any) => {
                 it('should correctly invoke the handler call method', () => {
                //    sinon.assert.calledWith(spy, client.onError);
                 });
-                (handler.answerPhoneCall as any).restore();
+                (window.fakeCallback as any).restore();
 
             }
         });
 
         describe('ending a phone call', ()=>{
-            const client = new Client(handler, rtc);
-            const endPhoneCallSpy = sinon.spy(handler, 'endPhoneCall');
+            const client = new Client({}, rtc);
+            const endPhoneCallSpy = sinon.spy(window, 'fakeCallback');
+            client.on("endPhoneCall",window.fakeCallback);
             client.endPhoneCall();
             it('it should call the handler.endPhoneCall callback', () => {
-              //  sinon.assert.calledWith(endPhoneCallSpy, client.onError);
+              sinon.assert.calledOnce(endPhoneCallSpy);
             });
-            (handler.endPhoneCall as any).restore();
+            (window.fakeCallback as any).restore();
         });
     });
 };

@@ -66,15 +66,12 @@ class Client {
      * 
      */
     public handleSenderStream(message: Message): void {
-        if (message.Type === MessageType.Candidate) {
-            if (this.peerConnection) {
-                this.peerConnection.addIceCandidate(message.data).catch(this.events.callEvent("error"));
-            }
-        }
+        this.addIceCandidate(message);
         if (message.Type === MessageType.SessionDescription) {
             this.peerConnection.setRemoteDescription(message.data).catch(this.events.callEvent("error"));
         }
     }
+    
     /**
      * Event handler for when the target accepts the call
      * 
@@ -97,11 +94,7 @@ class Client {
      * 
      */
     public handleTargetStream(message: Message) {
-        if (message.Type === MessageType.Candidate) {
-            if (this.peerConnection) {
-                this.peerConnection.addIceCandidate(message.data).catch(this.events.callEvent("error"));
-            }
-        }
+        this.addIceCandidate(message);
         if (message.Type === MessageType.SessionDescription) {
 
             this._rtc.getUserMedia().then((stream:any)=>{
@@ -113,7 +106,13 @@ class Client {
             }).catch(this.events.callEvent("error"));
         }
     }
-
+    private addIceCandidate(message:Message){
+         if (message.Type === MessageType.Candidate) {
+            if (this.peerConnection) {
+                this.peerConnection.addIceCandidate(message.data).catch(this.events.callEvent("error"));
+            }
+        }
+    }
     private setupPeerConnection(stream: IMediaStream, remoteDescription?: Object): void {
         console.log(this._rtc);
         this.peerConnection = this._rtc.createPeerConnection(this._RTCConfiguration);
@@ -185,6 +184,7 @@ class Client {
      * End the current phone call
      */
     public endPhoneCall(): void {
+        console.log("ending phone call");
         this.events.callEvent("endPhoneCall")();
     }
 
