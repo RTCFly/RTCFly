@@ -1,5 +1,5 @@
 declare interface IRTC {
-    getUserMedia();
+    getUserMedia(mediaConstrains:any);
     RTCPeerConnection:any; 
     createPeerConnection(config); 
 }

@@ -17,24 +17,24 @@ export default (expect :any, assert : any) => {
     describe('calls',() => {
         const params = [{
             description: 'with no video elements',
-            local: undefined,
-            remote: undefined,
-            _id: 'dave'
+            localElement: undefined,
+            remoteElement: undefined,
+            id: 'dave'
         }, {
             description: 'with only a local element',
-            local: new HTMLMediaElement(),
-            remote: undefined,
-            _id: 'steve'
+            localElement: new HTMLMediaElement(),
+            remoteElement: undefined,
+            id: 'steve'
         }, {
             description: 'with only a remote element',
-            local: undefined,
-            remote: new HTMLMediaElement(),
-            _id: 'ryan'
+            localElement: undefined,
+            remoteElement: new HTMLMediaElement(),
+            id: 'ryan'
         }, {
             description: 'with both a local and remote element',
-            local: new HTMLMediaElement(),
-            remote: new HTMLMediaElement(),
-            _id: 'john'
+            localElement: new HTMLMediaElement(),
+            remoteElement: new HTMLMediaElement(),
+            id: 'john'
         }];
         describe('call a remote user using their _id', () => {
 
@@ -44,10 +44,10 @@ export default (expect :any, assert : any) => {
                 let param: any = params[i];
                  const spy = sinon.spy(window, 'fakeCallback');
                 client.on('callInitialized', window.fakeCallback);
-                client.call(param._id, param.local, param.remote);
+                client.call(param);
                 describe("with " + param.description, () => {
                     it('should correctly initialise the local video', () => {
-                        if (param.local) {
+                        if (param.localElement) {
                             expect(client.getLocalVideo()).to.not.be.undefined;
                         } else {
                             const localVid = client.getLocalVideo();
@@ -55,7 +55,7 @@ export default (expect :any, assert : any) => {
                         }
                     })
                     it('should correctly initialise the remote video', () => {
-                        if (param.remote) {
+                        if (param.remoteElement) {
                             expect(client.getRemoteVideo()).to.not.be.undefined;
                         } else {
                             expect(client.getRemoteVideo()).to.be.undefined;
@@ -63,7 +63,7 @@ export default (expect :any, assert : any) => {
                     });
                 });
                 it('should correctly invoke the handler call method', () => {
-                    sinon.assert.calledWith(spy, param._id);
+                    sinon.assert.calledWith(spy, param);
                 });
                 (window.fakeCallback as any).restore();
             }
@@ -76,10 +76,10 @@ export default (expect :any, assert : any) => {
                 let param: any = params[i];
                 const spy = sinon.spy(window, 'fakeCallback');
                 client.on("answerPhoneCall", window.fakeCallback);
-                client.answerPhoneCall(param.local, param.remote);
+                client.answerPhoneCall(param);
                 describe("with " + param.description, () => {
                     it('should correctly initialise the local video', () => {
-                        if (param.local) {
+                        if (param.localElement) {
                             expect(client.getLocalVideo()).to.not.be.undefined;
                         } else {
                             const localVid = client.getLocalVideo();
@@ -87,7 +87,7 @@ export default (expect :any, assert : any) => {
                         }
                     })
                     it('should correctly initialise the remote video', () => {
-                        if (param.remote) {
+                        if (param.remoteElement) {
                             expect(client.getRemoteVideo()).to.not.be.undefined;
                         } else {
                             expect(client.getRemoteVideo()).to.be.undefined;

@@ -1,8 +1,8 @@
 {
   "name": "rtcfly",
   "author": "rtcfly",
-  "version": "0.0.1-alpha-1",
-  "description": "Stable, modular WebRTC",
+  "version": "0.0.1",
+  "description": "Stable, fun, WebRTC",
   "repository": {
     "type": "git",
     "url": ""

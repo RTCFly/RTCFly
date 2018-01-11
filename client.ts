@@ -23,7 +23,8 @@ class Client {
     private _retryCount: number;
     private _retryLimit: number;
     private events: ClientEvents;
-
+    private _mediaConstraints: any = {}; 
+    
     public peerConnection: IPeerConnection;
     private _RTCConfiguration: Object;
     private _rtc: IRTC;
@@ -40,16 +41,22 @@ class Client {
      * @param local {IHTMLMediaElement}
      * @param remote {IHTMLMediaElement}
      */
-    public call(_id: string, local: IHTMLMediaElement, remote: IHTMLMediaElement): void {
+    public call(params:ICallParams): void {
         this._retryCount = 0;
-
+        const {video,audio,localElement,remoteElement,id} = params; 
         this._localVideo = null;
         this._remoteVideo = null;
-        if (local !== undefined)
-            this._localVideo = new VideoWrapper(local);
-        if (remote)
-            this._remoteVideo = new VideoWrapper(remote);
-        this.events.callEvent("callInitialized")(_id);
+        this._mediaConstraints = {
+            audio, 
+            video
+        };
+        if (localElement !== undefined){
+            this._localVideo = new VideoWrapper(localElement);
+        }
+        if (remoteElement !== undefined){
+            this._remoteVideo = new VideoWrapper(remoteElement);
+        }
+        this.events.callEvent("callInitialized")(params);
     }
     /**
      * Reject a new phone call that the user is recieving
@@ -77,7 +84,7 @@ class Client {
      * 
      */
     public  handleTargetAccept() {
-        this._rtc.getUserMedia().then((stream: any) => {
+        this._rtc.getUserMedia(this._mediaConstraints).then((stream: any) => {
             if (this._localVideo) {
                 this._localVideo.setStream(stream, true);
                 this._localVideo.play();
@@ -97,7 +104,7 @@ class Client {
         this.addIceCandidate(message);
         if (message.Type === MessageType.SessionDescription) {
 
-            this._rtc.getUserMedia().then((stream:any)=>{
+            this._rtc.getUserMedia(this._mediaConstraints).then((stream:any)=>{
             if (this._localVideo) {
                 this._localVideo.setStream(stream, true);
                 this._localVideo.play();
@@ -129,7 +136,7 @@ class Client {
     private iceConnectionStateFailed(): void {
            this.peerConnection = undefined;
                 if (this._retryCount < this._retryLimit) {
-                    this._rtc.getUserMedia().then((stream: any) => {
+                    this._rtc.getUserMedia(this._mediaConstraints).then((stream: any) => {
                         this._retryCount++;
                         if (this._localVideo) {
                             this._localVideo.pause();
@@ -169,13 +176,20 @@ class Client {
      * @param local {IHTMLMediaElement}
      * @param remote {IHTMLMediaElement}
      */
-    public answerPhoneCall(local: IHTMLMediaElement, remote: IHTMLMediaElement): void {
-        this._localVideo = undefined;
-        this._remoteVideo = undefined;
-        if (local)
-            this._localVideo = new VideoWrapper(local);
-        if (remote)
-            this._remoteVideo = new VideoWrapper(remote);
+    public answerPhoneCall(params: ICallParams): void {
+        this._localVideo = null;
+        this._remoteVideo = null;
+        const {video,audio,localElement,remoteElement,id} = params; 
+        this._mediaConstraints = {
+            video, 
+            audio
+        };
+        if (localElement !== undefined){
+            this._localVideo = new VideoWrapper(localElement);
+        }
+        if (remoteElement !== undefined){
+            this._remoteVideo = new VideoWrapper(remoteElement);
+        }
         this.events.callEvent("answerPhoneCall")(this.events.callEvent("error"));
     }
 
