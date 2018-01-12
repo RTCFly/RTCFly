@@ -123,7 +123,6 @@ class Client {
         }
     }
     private setupPeerConnection(stream: IMediaStream, remoteDescription?: Object): void {
-        console.log(this._rtc);
         this.peerConnection = this._rtc.createPeerConnection({
             iceServers:this._iceServers
         });
@@ -197,7 +196,6 @@ class Client {
      * End the current phone call
      */
     public endPhoneCall(): void {
-        console.log("ending phone call");
         this.events.callEvent("endPhoneCall")();
     }
 

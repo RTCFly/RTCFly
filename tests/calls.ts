@@ -9,7 +9,6 @@ import * as sinon from 'sinon';
 // import 'mocha';
 const window = {
     fakeCallback:function(){
-        console.log("dave", arguments)
     }
 };
 
