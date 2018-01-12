@@ -24,17 +24,22 @@ class Client {
     private _retryLimit: number;
     private events: ClientEvents;
     private _mediaConstraints: any = {}; 
+    private _iceServers:Array<any> = []; 
     
     public peerConnection: IPeerConnection;
-    private _RTCConfiguration: Object;
+
     private _rtc: IRTC;
 
     constructor(settings: any, rtc: IRTC) {
         this._rtc = rtc; 
         this.events = new ClientEvents(); 
     }
-
-
+    
+    public init(data:any){
+        if(data.iceServers){
+            this._iceServers = data.iceServers;
+        }
+    }
     /**
      * Call allows you to call a remote user using their userId
      * @param _id {string}
@@ -122,7 +127,9 @@ class Client {
     }
     private setupPeerConnection(stream: IMediaStream, remoteDescription?: Object): void {
         console.log(this._rtc);
-        this.peerConnection = this._rtc.createPeerConnection(this._RTCConfiguration);
+        this.peerConnection = this._rtc.createPeerConnection({
+            iceServers:this._iceServers
+        });
         this.events.callEvent("peerConnectionCreated")();
         this.setPeerConnectionCallbacks();
         this.peerConnection.addStream(stream);
