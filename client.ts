@@ -20,8 +20,6 @@ class Client {
 
     private _localVideo: VideoWrapper;
     private _remoteVideo: VideoWrapper;
-    private _retryCount: number;
-    private _retryLimit: number;
     private events: ClientEvents;
     private _mediaConstraints: any = {}; 
     private _iceServers:Array<any> = []; 
@@ -47,7 +45,6 @@ class Client {
      * @param remote {IHTMLMediaElement}
      */
     public call(params:ICallParams): void {
-        this._retryCount = 0;
         const {video,audio,localElement,remoteElement,id} = params; 
         this._localVideo = null;
         this._remoteVideo = null;
@@ -140,34 +137,29 @@ class Client {
             this.createCallSession();
         }
     }
-    private iceConnectionStateFailed(): void {
-           this.peerConnection = undefined;
-                if (this._retryCount < this._retryLimit) {
-                    this._rtc.getUserMedia(this._mediaConstraints).then((stream: any) => {
-                        this._retryCount++;
-                        if (this._localVideo) {
-                            this._localVideo.pause();
-                            this._localVideo.setStream(stream, true);
-                            this._localVideo.play();
-                        }
-                        this.setupPeerConnection(stream);
-
-                    }).catch(this.events.callEvent("error"));
-
-                } else {
-                    const error = new Error("Could not establish connection");
-                    this.events.callEvent("error")(error);
-                }
-
-    }
+    // private iceConnectionStateFailed(): void {
+    //        this.peerConnection = undefined;
+    //             if (this._retryCount < this._retryLimit) {
+    //                 this._rtc.getUserMedia(this._mediaConstraints).then((stream: any) => {
+    //                     this._retryCount++;
+    //                     if (this._localVideo) {
+    //                         this._localVideo.pause();
+    //                         this._localVideo.setStream(stream, true);
+    //                         this._localVideo.play();
+    //                     }
+    //                     this.setupPeerConnection(stream);
+    //
+    //                 }).catch(this.events.callEvent("error"));
+    //
+    //             } else {
+    //                 const error = new Error("Could not establish connection");
+    //                 this.events.callEvent("error")(error);
+    //             }
+    //
+    // }
     private setPeerConnectionCallbacks(): void {
         this.peerConnection.onicecandidate = function (event: any)  {
             this.events.callEvent("emitIceCandidate")(event.candidate);
-        }.bind(this);
-        this.peerConnection.oniceconnectionstatechange = function (event: any) {
-            if (event.target.iceConnectionState === "failed") {
-             this.iceConnectionStateFailed(); 
-            }
         }.bind(this);
         this.peerConnection.onaddstream = function (stream: any) {
             if (this._remoteVideo) {
