@@ -9,7 +9,7 @@
 # RTCFly 
 WebRTC, accessible for all :) 
 
-### [Documentation](https://www.gitbook.com/book/rtcfly/documentation-english/details)
+### [Documentation](https://rtcfly.gitbooks.io/documentation-english/content/)
 (currently hosted on Gitbook, but we're looking at making our own).
 
 
