@@ -23,7 +23,6 @@ class Client {
     private events: ClientEvents;
     private _mediaConstraints: any = {}; 
     private _iceServers:Array<any> = []; 
-    private _localStream
     
     public peerConnection: IPeerConnection;
 
@@ -62,12 +61,13 @@ class Client {
         this.events.callEvent("callInitialized")(params);
     }
     /**
-     * Reject a new phone call that the user is recieving
+     * Reject a new call that the user is recieving
      * 
      * */
     public rejectCall(){
         this._localVideo = null; 
         this._remoteVideo = null; 
+        this.peerConnection = null;
         this.events.callEvent("rejectCall")(); 
     }
     /**
@@ -171,14 +171,14 @@ class Client {
     }
 
     /**
-     * Answer the phone call
+     * Answer the call
      * @param local {IHTMLMediaElement}
      * @param remote {IHTMLMediaElement}
      */
-    public answerPhoneCall(params: ICallParams): void {
+    public answerCall(params: ICallParams): void {
         this._localVideo = null;
         this._remoteVideo = null;
-        const {video,audio,localElement,remoteElement,id} = params; 
+        const {video,audio,localElement,remoteElement} = params; 
         this._mediaConstraints = {
             video, 
             audio
@@ -189,14 +189,14 @@ class Client {
         if (remoteElement !== undefined){
             this._remoteVideo = new VideoWrapper(remoteElement);
         }
-        this.events.callEvent("answerPhoneCall")(this.events.callEvent("error"));
+        this.events.callEvent("answerCall")(this.events.callEvent("error"));
     }
 
 
     /**
-     * End the current phone call
+     * End the current call
      */
-    public endPhoneCall(): void {
+    public endCall(): void {
         if(this._localVideo){
             this._localVideo.stop(); 
             this._localVideo = null;
@@ -205,8 +205,11 @@ class Client {
             this._remoteVideo.stop(); 
             this._remoteVideo = null;
         }
+        if(this.peerConnection){
+            this.peerConnection = null; 
+        }
          
-        this.events.callEvent("endPhoneCall")();
+        this.events.callEvent("endCall")();
     }
 
     /**

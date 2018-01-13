@@ -69,13 +69,13 @@ export default (expect :any, assert : any) => {
 
         });
 
-        describe('answering a phone call', () => {
+        describe('answering a call', () => {
             for (let i = 0; i < params.length; i++) {
                 const client = new Client({}, rtc);
                 let param: any = params[i];
                 const spy = sinon.spy(window, 'fakeCallback');
-                client.on("answerPhoneCall", window.fakeCallback);
-                client.answerPhoneCall(param);
+                client.on("answerCall", window.fakeCallback);
+                client.answerCall(param);
                 describe("with " + param.description, () => {
                     it('should correctly initialise the local video', () => {
                         if (param.localElement) {
@@ -101,13 +101,13 @@ export default (expect :any, assert : any) => {
             }
         });
 
-        describe('ending a phone call', ()=>{
+        describe('ending a call', ()=>{
             const client = new Client({}, rtc);
-            const endPhoneCallSpy = sinon.spy(window, 'fakeCallback');
-            client.on("endPhoneCall",window.fakeCallback);
-            client.endPhoneCall();
-            it('it should call the handler.endPhoneCall callback', () => {
-              sinon.assert.calledOnce(endPhoneCallSpy);
+            const endCallSpy = sinon.spy(window, 'fakeCallback');
+            client.on("endCall",window.fakeCallback);
+            client.endCall();
+            it('it should call the handler.endCall callback', () => {
+              sinon.assert.calledOnce(endCallSpy);
             });
             (window.fakeCallback as any).restore();
         });

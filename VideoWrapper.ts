@@ -52,8 +52,13 @@ export default class Video {
         }
     }
     public stop(){
-        this.stream.getVideoTracks().forEach(stream => stream.stop());
-        this.stream.getAudioTracks().forEach(stream => stream.stop());
+        console.log("stopping");
+        this.stream.getVideoTracks().forEach(stream => {
+            console.log("video", stream)
+            stream.stop()});
+        this.stream.getAudioTracks().forEach(stream => {
+            console.log("audio", stream);
+            stream.stop()});
     }
 }
 export {
