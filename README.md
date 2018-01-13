@@ -7,18 +7,16 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/f94a60d53c75dc4fbbe4/maintainability)](https://codeclimate.com/github/RTCFly/RTCFly/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/f94a60d53c75dc4fbbe4/test_coverage)](https://codeclimate.com/github/RTCFly/RTCFly/test_coverage)
 # RTCFly 
-At present, this module doesn't work, but it will soon!
+WebRTC, accessible for all :) 
 
-### What is it? 
-WebRTC can get pretty annoying. It's fun, but annoying. There are a load of polyfills and frameworks out there, but nothing that makes it easy to just build with WebRTC. 
-
-This project seeks to provide a simple way of integrating 1 to 1 WebRTC into your projects.
+### [Documentation](https://www.gitbook.com/book/rtcfly/documentation-english/details)
+(currently hosted on Gitbook, but we're looking at making our own).
 
 
-###Current State
-This project was created in an effort to better abstract and unit test my meteor video chat extension
-[meteor-video-chat](https://www.github.com/elmarti/meteor-video-chat) and I am currently in the process of integrating it.
 
-Completing this integration will provide the concept and will allow me to document the process on integrating core-rtc into other projects. 
 
-Checkout the development branch of meteor-video-chat [here](https://github.com/elmarti/meteor-video-chat/tree/integrate-with-core-js)
+
+RTCFly is quite a young project, so we don't have too many examples yet, but see some below
+
+#### [Meteor Video Chat](https://meteorvideochat.herokuapp.com)
+This [example app](https://github.com/elmarti/meteor-video-chat-example) uses the [Meteor Video Chat](https://github.com/elmarti/meteor-video-chat) plugin which is has RTCFly at its core. 
