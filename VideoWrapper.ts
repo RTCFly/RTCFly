@@ -5,6 +5,7 @@ export default class Video {
      * @param video {HTMLElement}
      */
     private element: IHTMLMediaElement;
+    private stream: any;
     constructor ( video: IHTMLMediaElement ){
         if( !video ) {
             throw new Error( "Video element not found" );
@@ -43,11 +44,16 @@ export default class Video {
      */
     public setStream(stream: IMediaStream, muted? : boolean) : void {
         this.element.srcObject = stream;
+        this.stream = stream; 
         if( muted !== undefined ) {
             this.element.muted = muted;
         } else {
             this.element.muted = false;
         }
+    }
+    public stop(){
+        this.stream.getVideoTracks().forEach(stream => stream.stop());
+        this.stream.getAudioTracks().forEach(stream => stream.stop());
     }
 }
 export {

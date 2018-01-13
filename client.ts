@@ -23,6 +23,7 @@ class Client {
     private events: ClientEvents;
     private _mediaConstraints: any = {}; 
     private _iceServers:Array<any> = []; 
+    private _localStream
     
     public peerConnection: IPeerConnection;
 
@@ -196,6 +197,15 @@ class Client {
      * End the current phone call
      */
     public endPhoneCall(): void {
+        if(this._localVideo){
+            this._localVideo.stop(); 
+            this._localVideo = null;
+        }
+        if(this._remoteVideo){
+            this._remoteVideo.stop(); 
+            this._remoteVideo = null;
+        }
+         
         this.events.callEvent("endPhoneCall")();
     }
 
