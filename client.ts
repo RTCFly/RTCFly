@@ -34,9 +34,12 @@ class Client {
     }
     
     public init(data:any){
-        if(data.iceServers){
-            this._iceServers = data.iceServers;
+        if(data !== undefined){
+            if(data.iceServers){
+                this._iceServers = data.iceServers;
+            }
         }
+        this.events.callEvent("coreInitialized")();
     }
     /**
      * Call allows you to call a remote user using their userId

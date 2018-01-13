@@ -52,8 +52,10 @@ export default class Video {
         }
     }
     public stop(){
-        this.stream.getVideoTracks().forEach(stream => stream.stop());
-        this.stream.getAudioTracks().forEach(stream => stream.stop());
+        if(this.stream){
+            this.stream.getVideoTracks().forEach(stream => stream.stop());
+            this.stream.getAudioTracks().forEach(stream => stream.stop());
+        }
     }
 }
 export {
