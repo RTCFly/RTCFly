@@ -1,4 +1,5 @@
 import VideoWrapper from './VideoWrapper';
+import DataChannel from './DataChannel';
 import {Message, MessageType, MessageDirection} from './entities/Message';
 
 class ClientEvents {
@@ -62,6 +63,18 @@ class Client {
             this._remoteVideo = new VideoWrapper(remoteElement);
         }
         this.events.callEvent("callInitialized")(params);
+    }
+    
+    /**
+     * 
+     * Create a datachannel 
+     * 
+     */
+    public createDataChannel(options:any) : DataChannel{
+        if(!this.peerConnection){
+            throw new Error("PeerConnection is not initialized");
+        }
+        return new DataChannel(options, this.peerConnection);
     }
     /**
      * Reject a new call that the user is recieving
