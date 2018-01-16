@@ -8,4 +8,5 @@ declare interface IPeerConnection {
     onicecandidate() : void;
     oniceconnectionstatechange() : void;
     onaddstream(stream: IMediaStream) : void;
+    ondatachannel(event: any) : void; 
 }

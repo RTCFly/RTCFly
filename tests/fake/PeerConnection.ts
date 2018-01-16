@@ -33,5 +33,8 @@ export default class PeerConnection implements IPeerConnection{
 
     onaddstream(stream: IMediaStream): void {
     }
+    ondatachannel(event:any): void {
+        
+    }
 
 }

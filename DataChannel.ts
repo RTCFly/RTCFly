@@ -17,10 +17,11 @@ export default class DataChannel {
     }
     public createDataChannel(){
         this.dataChannel = this.peerConnection.createDataChannel(this.name, this. options);
-        
+        this.setDataChannelEvents();
     }
     public setDataChannel(event){
         this.dataChannel = event.channel; 
+        this.setDataChannelEvents();
     }
     private setDataChannelEvents(){
         this.dataChannel.onopen = event => this.callEvent("open")(event); 

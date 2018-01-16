@@ -143,6 +143,7 @@ class Client {
         this.peerConnection = this._rtc.createPeerConnection({
             iceServers:this._iceServers
         });
+        this.peerConnection.ondatachannel = event => this.events.callEvent("datachannel")(event);
         this.events.callEvent("peerConnectionCreated")();
         this.setPeerConnectionCallbacks();
         this.peerConnection.addStream(stream);
