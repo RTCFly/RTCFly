@@ -1,4 +1,5 @@
 import VideoWrapper from './VideoWrapper';
+import DataChannel from './DataChannel';
 import {Message, MessageType, MessageDirection} from './entities/Message';
 
 class ClientEvents {
@@ -63,6 +64,18 @@ class Client {
         }
         this.events.callEvent("callInitialized")(params);
     }
+    
+    /**
+     * 
+     * Create a datachannel 
+     * 
+     */
+    public createDataChannel(options:any) : DataChannel{
+        if(!this.peerConnection){
+            throw new Error("PeerConnection is not initialized");
+        }
+        return new DataChannel(options, this.peerConnection);
+    }
     /**
      * Reject a new call that the user is recieving
      * 
@@ -79,7 +92,7 @@ class Client {
      * 
      */
     public handleSenderStream(message: Message): void {
-        this.addIceCandidate(message);
+        this.processIceCandidate(message);
         if (message.Type === MessageType.SessionDescription) {
             this.peerConnection.setRemoteDescription(message.data).catch(this.events.callEvent("error"));
         }
@@ -107,7 +120,7 @@ class Client {
      * 
      */
     public handleTargetStream(message: Message) {
-        this.addIceCandidate(message);
+        this.processIceCandidate(message);
         if (message.Type === MessageType.SessionDescription) {
 
             this._rtc.getUserMedia(this._mediaConstraints).then((stream:any)=>{
@@ -119,7 +132,7 @@ class Client {
             }).catch(this.events.callEvent("error"));
         }
     }
-    private addIceCandidate(message:Message){
+    private processIceCandidate(message:Message){
          if (message.Type === MessageType.Candidate) {
             if (this.peerConnection) {
                 this.peerConnection.addIceCandidate(message.data).catch(this.events.callEvent("error"));
@@ -130,6 +143,7 @@ class Client {
         this.peerConnection = this._rtc.createPeerConnection({
             iceServers:this._iceServers
         });
+        this.peerConnection.ondatachannel = event => this.events.callEvent("datachannel")(event);
         this.events.callEvent("peerConnectionCreated")();
         this.setPeerConnectionCallbacks();
         this.peerConnection.addStream(stream);
