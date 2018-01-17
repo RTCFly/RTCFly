@@ -14,9 +14,10 @@ export default class DataChannel {
         this.name = options.name;
         delete options.name; 
         this.options = options; 
+        this.peerConnection = peerConnection;
     }
     public createDataChannel(){
-        this.dataChannel = this.peerConnection.createDataChannel(this.name, this. options);
+        this.dataChannel = this.peerConnection.createDataChannel(this.name, this.options);
         this.setDataChannelEvents();
     }
     public setDataChannel(event){
