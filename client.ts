@@ -293,7 +293,7 @@ class Client {
     private createCallSession() {
         log.info("creating call session");
         var offer = this.peerConnection.createOffer().then((offer:any)=>{
-            log.ingo("created offer", offer);
+            log.info("created offer", offer);
             this.peerConnection.setLocalDescription(offer);
             this.events.callEvent("emitSenderDescription")(offer);
             this.peerConnection.setLocalDescription(offer);
