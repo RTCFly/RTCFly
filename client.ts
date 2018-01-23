@@ -1,3 +1,5 @@
+import * as log from 'loglevel';
+
 import VideoWrapper from './VideoWrapper';
 import DataChannel from './DataChannel';
 import {Message, MessageType, MessageDirection} from './entities/Message';
@@ -8,6 +10,7 @@ class ClientEvents {
         this.eventMap = {};
     }
     callEvent(event){
+        log.debug("calling event", event);
         if(this.eventMap[event]){
             return this.eventMap[event];
         } else {
@@ -30,11 +33,13 @@ class Client {
     private _rtc: IRTC;
 
     constructor(settings: any, rtc: IRTC) {
+        log.setLevel("debug");
         this._rtc = rtc; 
         this.events = new ClientEvents(); 
     }
     
     public init(data:any){
+        log.debug("initalizing", data);
         if(data !== undefined){
             if(data.iceServers){
                 this._iceServers = data.iceServers;
@@ -49,6 +54,7 @@ class Client {
      * @param remote {IHTMLMediaElement}
      */
     public call(params:ICallParams): void {
+        log.debug("starting call", params);
         const {video,audio,localElement,remoteElement,id} = params; 
         this._localVideo = null;
         this._remoteVideo = null;
@@ -57,9 +63,11 @@ class Client {
             video
         };
         if (localElement !== undefined){
+            log.debug("setting local element", localElement);
             this._localVideo = new VideoWrapper(localElement);
         }
         if (remoteElement !== undefined){
+            log.debug("setting remote element", remoteElement);
             this._remoteVideo = new VideoWrapper(remoteElement);
         }
         this.events.callEvent("callInitialized")(params);
@@ -71,6 +79,7 @@ class Client {
      * 
      */
     public createDataChannel(options:any) : DataChannel{
+        log.debug("creating data channel", options);
         if(!this.peerConnection){
             throw new Error("PeerConnection is not initialized");
         }
@@ -81,6 +90,7 @@ class Client {
      * 
      * */
     public rejectCall(){
+        log.debug("rejecting call");
         this._localVideo = null; 
         this._remoteVideo = null; 
         this.peerConnection = null;
@@ -92,8 +102,10 @@ class Client {
      * 
      */
     public handleSenderStream(message: Message): void {
+        log.debug("handle sender stream", message);
         this.processIceCandidate(message);
         if (message.Type === MessageType.SessionDescription) {
+            log.debug("handle session description", message);
             this.peerConnection.setRemoteDescription(message.data).catch(this.events.callEvent("error"));
         }
     }
@@ -103,13 +115,16 @@ class Client {
      * 
      */
     public  handleTargetAccept() {
+        log.debug("handle target accept");
         this._rtc.getUserMedia(this._mediaConstraints).then((stream: any) => {
+            log.debug("got local media", stream);
             if (this._localVideo) {
                 this._localVideo.setStream(stream, true);
                 this._localVideo.play();
             }
             this.setupPeerConnection(stream);
         }).catch((err: Error) => {
+            log.error("could not get user media", err);
             this.events.callEvent("error")(err);
         });
 
@@ -120,32 +135,41 @@ class Client {
      * 
      */
     public handleTargetStream(message: Message) {
+        log.debug("handle target stream", message);
         this.processIceCandidate(message);
         if (message.Type === MessageType.SessionDescription) {
-
+            log.debug("handle session description");
             this._rtc.getUserMedia(this._mediaConstraints).then((stream:any)=>{
+                log.debug("getUserMedia", stream);
             if (this._localVideo) {
                 this._localVideo.setStream(stream, true);
                 this._localVideo.play();
             }
             this.setupPeerConnection(stream, message.data);
-            }).catch(this.events.callEvent("error"));
+            }).catch(err =>{
+                log.error("getUserMedia failed", err);
+                this.events.callEvent("error");
+            });
         }
     }
     private processIceCandidate(message:Message){
+        log.info("processIceCandidate", message);
          if (message.Type === MessageType.Candidate) {
+             log.info("addIceCandidate", message);
             if (this.peerConnection) {
                 this.peerConnection.addIceCandidate(message.data).catch(this.events.callEvent("error"));
             }
         }
     }
     private setupPeerConnection(stream: IMediaStream, remoteDescription?: Object): void {
+        log.info("setting peerConnection", stream, remoteDescription);
         this.peerConnection = this._rtc.createPeerConnection({
             iceServers:this._iceServers
         });
         this.peerConnection.ondatachannel = event => this.events.callEvent("datachannel")(event);
         this.events.callEvent("peerConnectionCreated")();
         this.setPeerConnectionCallbacks();
+        log.info("adding stream");
         this.peerConnection.addStream(stream);
         if (remoteDescription) {
             this.createTargetSession(remoteDescription);
@@ -175,10 +199,13 @@ class Client {
     //
     // }
     private setPeerConnectionCallbacks(): void {
+        log.info("setting peerConnection callbacks");
         this.peerConnection.onicecandidate = function (event: any)  {
+            log.info("add ice candidate", event);
             this.events.callEvent("emitIceCandidate")(event.candidate);
         }.bind(this);
         this.peerConnection.onaddstream = function (stream: any) {
+            log.info("on add remote stream", stream);
             if (this._remoteVideo) {
                 this._remoteVideo.pause();
                 this._remoteVideo.setStream(stream.stream);
@@ -193,6 +220,7 @@ class Client {
      * @param remote {IHTMLMediaElement}
      */
     public answerCall(params: ICallParams): void {
+        log.info("answer call", params);
         this._localVideo = null;
         this._remoteVideo = null;
         const {video,audio,localElement,remoteElement} = params; 
@@ -201,9 +229,11 @@ class Client {
             audio
         };
         if (localElement !== undefined){
+            log.info("setting local video", localElement);
             this._localVideo = new VideoWrapper(localElement);
         }
         if (remoteElement !== undefined){
+            log.info("setting remote video", remoteElement);
             this._remoteVideo = new VideoWrapper(remoteElement);
         }
         this.events.callEvent("answerCall")(this.events.callEvent("error"));
@@ -214,11 +244,14 @@ class Client {
      * End the current call
      */
     public endCall(): void {
+        log.info("ending call");
         if(this._localVideo){
+            log.info("stopping local video");
             this._localVideo.stop(); 
             this._localVideo = null;
         }
         if(this._remoteVideo){
+            log.info("stopping remote video");
             this._remoteVideo.stop(); 
             this._remoteVideo = null;
         }
@@ -235,19 +268,22 @@ class Client {
      * @param remoteDescription {RTCSessionDescription}
      */
     private createTargetSession(remoteDescription: Object) {
-
+        log.info("creating target session", remoteDescription);
         this.peerConnection.setRemoteDescription(remoteDescription).then(() => {
-
+            log.info("remote description set");
             this.peerConnection.createAnswer().then((answer: Object) => {
-
+                log.info("creating answer", answer);
                 this.peerConnection.setLocalDescription(answer).catch((setLocalDescriptionError: Error) => {
+                    log.info("local description set");
                     this.events.callEvent("error")(setLocalDescriptionError);
                 });
                 this.events.callEvent("emitTargetAnswer")(answer);
             }).catch((createAnswerError: Error) => {
+                log.error("create answer error", createAnswerError);
                 this.events.callEvent("error")(createAnswerError);
             });
         }).catch((setRemoteDescriptionError: Error) => {
+                log.error("set remote description error", setRemoteDescriptionError);
             this.events.callEvent("error")(setRemoteDescriptionError);
         });
 
@@ -255,11 +291,14 @@ class Client {
     }
 
     private createCallSession() {
+        log.info("creating call session");
         var offer = this.peerConnection.createOffer().then((offer:any)=>{
+            log.ingo("created offer", offer);
             this.peerConnection.setLocalDescription(offer);
             this.events.callEvent("emitSenderDescription")(offer);
             this.peerConnection.setLocalDescription(offer);
         }).catch((err:Error)=>{
+            log.error("create call session error", err);
             this.events.callEvent("error")(err);
         });
     }
@@ -268,6 +307,7 @@ class Client {
      * @returns {VideoWrapper}
      */
     public getLocalVideo(): VideoWrapper {
+        log.info("getting local video", this._localVideo);
         if (this._localVideo) {
             return this._localVideo;
         } else {
@@ -280,6 +320,7 @@ class Client {
      * @returns {VideoWrapper}
      */
     public getRemoteVideo(): VideoWrapper {
+        log.info("getting remote video", this._remoteVideo);
         if (this._remoteVideo) {
             return this._remoteVideo;
         } else {
@@ -288,6 +329,7 @@ class Client {
     }
     
     public on(eventName:string, action:Function) {
+        log.info("adding event", eventName);
         this.events.eventMap[eventName] = action; 
     }
 
