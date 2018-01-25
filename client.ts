@@ -33,7 +33,7 @@ class Client {
     private _rtc: IRTC;
 
     constructor(settings: any, rtc: IRTC) {
-        log.setLevel("debug");
+        log.setLevel("silent");
         this._rtc = rtc; 
         this.events = new ClientEvents(); 
     }
@@ -43,6 +43,11 @@ class Client {
         if(data !== undefined){
             if(data.iceServers){
                 this._iceServers = data.iceServers;
+            }
+            if(data.debug === true){
+                log.setLevel("trace");
+            } else if(data.debug === false){
+                log.setLevel("silent");
             }
         }
         this.events.callEvent("coreInitialized")();
@@ -157,7 +162,10 @@ class Client {
          if (message.Type === MessageType.Candidate) {
              log.info("addIceCandidate", message);
             if (this.peerConnection) {
-                this.peerConnection.addIceCandidate(message.data).catch(this.events.callEvent("error"));
+                this.peerConnection.addIceCandidate(message.data).catch(err=>{
+                    log.debug("could not add ice candidate",err);
+                    this.events.callEvent("error")(err);
+                });
             }
         }
     }
