@@ -121,17 +121,21 @@ class Client {
      */
     public  handleTargetAccept() {
         log.debug("handle target accept");
-        this._rtc.getUserMedia(this._mediaConstraints).then((stream: any) => {
-            log.debug("got local media", stream);
-            if (this._localVideo) {
-                this._localVideo.setStream(stream, true);
-                this._localVideo.play();
-            }
-            this.setupPeerConnection(stream);
-        }).catch((err: Error) => {
-            log.error("could not get user media", err);
-            this.events.callEvent("error")(err);
-        });
+        if(this._mediaConstraints.video || this._mediaConstraints.audio){
+            this._rtc.getUserMedia(this._mediaConstraints).then((stream: any) => {
+                log.debug("got local media", stream);
+                if (this._localVideo) {
+                    this._localVideo.setStream(stream, true);
+                    this._localVideo.play();
+                }
+                this.setupPeerConnection(stream);
+            }).catch((err: Error) => {
+                log.error("could not get user media", err);
+                this.events.callEvent("userMediaError")(err);
+            });
+        } else {
+            this.setupPeerConnection();
+        }
 
     }
     /**
@@ -144,17 +148,22 @@ class Client {
         this.processIceCandidate(message);
         if (message.Type === MessageType.SessionDescription) {
             log.debug("handle session description");
-            this._rtc.getUserMedia(this._mediaConstraints).then((stream:any)=>{
-                log.debug("getUserMedia", stream);
-            if (this._localVideo) {
-                this._localVideo.setStream(stream, true);
-                this._localVideo.play();
+            if(this._mediaConstraints.video !== undefined 
+            || this._mediaConstraints.audio !== undefined){
+                this._rtc.getUserMedia(this._mediaConstraints).then((stream:any)=>{
+                    log.debug("getUserMedia", stream);
+                if (this._localVideo) {
+                    this._localVideo.setStream(stream, true);
+                    this._localVideo.play();
+                }
+                this.setupPeerConnection(stream, message.data);
+                }).catch(err =>{
+                    log.error("getUserMedia failed", err);
+                    this.events.callEvent("userMediaError")(err);
+                });
+            } else {
+                this.setupPeerConnection();
             }
-            this.setupPeerConnection(stream, message.data);
-            }).catch(err =>{
-                log.error("getUserMedia failed", err);
-                this.events.callEvent("error");
-            });
         }
     }
     private processIceCandidate(message:Message){
@@ -169,7 +178,7 @@ class Client {
             }
         }
     }
-    private setupPeerConnection(stream: IMediaStream, remoteDescription?: Object): void {
+    private setupPeerConnection(stream?: IMediaStream, remoteDescription?: Object): void {
         log.info("setting peerConnection", stream, remoteDescription);
         this.peerConnection = this._rtc.createPeerConnection({
             iceServers:this._iceServers
@@ -178,7 +187,9 @@ class Client {
         this.events.callEvent("peerConnectionCreated")();
         this.setPeerConnectionCallbacks();
         log.info("adding stream");
-        this.peerConnection.addStream(stream);
+        if(stream !== undefined){
+            this.peerConnection.addStream(stream);
+        }
         if (remoteDescription) {
             this.createTargetSession(remoteDescription);
         }
@@ -186,26 +197,7 @@ class Client {
             this.createCallSession();
         }
     }
-    // private iceConnectionStateFailed(): void {
-    //        this.peerConnection = undefined;
-    //             if (this._retryCount < this._retryLimit) {
-    //                 this._rtc.getUserMedia(this._mediaConstraints).then((stream: any) => {
-    //                     this._retryCount++;
-    //                     if (this._localVideo) {
-    //                         this._localVideo.pause();
-    //                         this._localVideo.setStream(stream, true);
-    //                         this._localVideo.play();
-    //                     }
-    //                     this.setupPeerConnection(stream);
-    //
-    //                 }).catch(this.events.callEvent("error"));
-    //
-    //             } else {
-    //                 const error = new Error("Could not establish connection");
-    //                 this.events.callEvent("error")(error);
-    //             }
-    //
-    // }
+
     private setPeerConnectionCallbacks(): void {
         log.info("setting peerConnection callbacks");
         this.peerConnection.onicecandidate = function (event: any)  {
@@ -246,8 +238,16 @@ class Client {
         }
         this.events.callEvent("answerCall")(this.events.callEvent("error"));
     }
-
-
+    
+    public async getDevices(){
+        try{
+        const devices = this._rtc.enumerateDevices();
+        return await devices; 
+        }catch(err){
+            return [];
+        }
+    }
+    
     /**
      * End the current call
      */
