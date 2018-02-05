@@ -17,8 +17,12 @@ export default (expect :any, assert : any) => {
         
         
         describe('getDevices returns list of devices', () => {
-             const client = new Client({}, rtc); 
-            console.log(client.getDevices());
+            
+            (async function(){
+                const client = new Client({}, rtc); 
+                console.log(await client.getDevices());
+            })();
+          
         });
         
         const params = [{

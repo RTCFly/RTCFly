@@ -1,5 +1,10 @@
 export default function(){
     return new Promise(function (resolve) {
-        resolve(["device1", "device2", "device3"]);
-    })
+        resolve([{
+            deviceId:"deviceId",
+            groupId:"groupId", 
+            kind:"kind", 
+            label:"label"
+        }]);
+    });
 }

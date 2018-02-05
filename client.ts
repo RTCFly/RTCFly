@@ -27,6 +27,7 @@ class Client {
     private events: ClientEvents;
     private _mediaConstraints: any = {}; 
     private _iceServers:Array<any> = []; 
+    private _devices:Array<IMediaDeviceInfo>;
     
     public peerConnection: IPeerConnection;
 
@@ -37,8 +38,17 @@ class Client {
         this._rtc = rtc; 
         this.events = new ClientEvents(); 
     }
-    
+    private enumerateDevices() : void {
+        this._rtc.enumerateDevices().then(devices => {
+           this._devices = devices;  
+        }).then(() => {
+            this._rtc.onDeviceChange(event => {
+                console.log("onDeviceChange", event);
+            });
+        });
+    }
     public init(data:any){
+        this.enumerateDevices();
         log.debug("initalizing", data);
         if(data !== undefined){
             if(data.iceServers){
@@ -241,8 +251,9 @@ class Client {
     
     public async getDevices(){
         try{
-        const devices = this._rtc.enumerateDevices();
-        return await devices; 
+        const devices  = await this._rtc.enumerateDevices();
+        console.log("donkey");
+        return  devices; 
         }catch(err){
             return [];
         }

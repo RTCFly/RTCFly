@@ -1,4 +1,4 @@
-import { getUserMedia, RTCPeerConnection, enumerateDevices } from 'flyadapter';
+import { getUserMedia, RTCPeerConnection, enumerateDevices, onDeviceChange } from 'flyadapter';
 
 
 import Client from './client';
@@ -9,10 +9,12 @@ class RTC implements IRTC{
     public getUserMedia;
     public RTCPeerConnection;
     public enumerateDevices;
-    constructor(getUserMedia, RTCPeerConnection, enumerateDevices){
+    public onDeviceChange; 
+    constructor(getUserMedia, RTCPeerConnection, enumerateDevices,onDeviceChange){
         this.getUserMedia = getUserMedia; 
         this.RTCPeerConnection = RTCPeerConnection;
         this.enumerateDevices = enumerateDevices;
+        this.onDeviceChange = onDeviceChange;
     }
     createPeerConnection(config){
         return new this.RTCPeerConnection(config);

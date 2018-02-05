@@ -3,4 +3,5 @@ declare interface IRTC {
     RTCPeerConnection:any; 
     createPeerConnection(config); 
     enumerateDevices(); 
+    onDeviceChange(callback);
 }
