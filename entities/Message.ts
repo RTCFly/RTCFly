@@ -12,3 +12,5 @@ export class Message {
     public Type: MessageType;
     public data: Object;
 }
+
+

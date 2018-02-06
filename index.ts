@@ -4,6 +4,7 @@ import { getUserMedia, RTCPeerConnection, enumerateDevices, onDeviceChange } fro
 import Client from './client';
 import Server from './server';
 import {MessageType, Message, MessageDirection} from './entities/Message';
+import { MessagingClient } from './messaging-client';
 
 class RTC implements IRTC{
     public getUserMedia;
@@ -21,7 +22,7 @@ class RTC implements IRTC{
     }
 }
 
-const client = (settings) => new Client(settings, new RTC(getUserMedia, RTCPeerConnection, enumerateDevices));
+const client = (settings) => new Client(settings, new RTC(getUserMedia, RTCPeerConnection, enumerateDevices), MessagingClient);
 //const server = (handler) => Server(handler);
 export {
     client,
