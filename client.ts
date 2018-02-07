@@ -30,6 +30,7 @@ class Client {
     private _iceServers:Array<any> = []; 
     private _devices:Array<IMediaDeviceInfo>;
     private _messagingClient:any;
+    private _userIP:string; 
     
     public peerConnection: IPeerConnection;
 
@@ -47,26 +48,32 @@ class Client {
         }).then(() => {
             this._rtc.onDeviceChange(event => {
                 console.log("onDeviceChange", event);
+                event.target.enumerateDevices(devices =>{
+                     this._devices = devices;  
+                })
             });
         });
     }
     public init(data:any){
         this.enumerateDevices();
-        log.debug("initalizing", data);
-        if(data !== undefined){
-            if(data.uri !== undefined){
-                this._messagingClient.init({uri:data.uri, data.mode, user:user});
+        this.getUserIP(IP =>{
+            log.debug("initalizing", data);
+            if(data !== undefined){
+                if(data.uri !== undefined){
+                    this._messagingClient.init({uri:data.uri, data.mode, user:data.user, IP});
+                }
+                if(data.iceServers){
+                    this._iceServers = data.iceServers;
+                }
+                if(data.debug === true){
+                    log.setLevel("trace");
+                } else if(data.debug === false){
+                    log.setLevel("silent");
+                }
             }
-            if(data.iceServers){
-                this._iceServers = data.iceServers;
-            }
-            if(data.debug === true){
-                log.setLevel("trace");
-            } else if(data.debug === false){
-                log.setLevel("silent");
-            }
-        }
-        this.events.callEvent("coreInitialized")();
+            this._userIP = IP; 
+            this.events.callEvent("coreInitialized")();
+        });
     }
     /**
      * Call allows you to call a remote user using their userId
@@ -93,7 +100,40 @@ class Client {
         }
         this.events.callEvent("callInitialized")(params);
     }
-    
+    private getUserIP(onNewIP: Function) : void { 
+    const pc = new this._rtc.peerConnection({
+        iceServers: []
+    });
+    const localIPs = {};
+    const ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g;
+    let key;
+
+    function iterateIP(ip) {
+        if (!localIPs[ip]) onNewIP(ip);
+        localIPs[ip] = true;
+    }
+
+     //create a bogus data channel
+    pc.createDataChannel("");
+
+    // create offer and set local description
+    pc.createOffer().then(function(sdp) {
+        sdp.sdp.split('\n').forEach(function(line) {
+            if (line.indexOf('candidate') < 0) return;
+            line.match(ipRegex).forEach(iterateIP);
+        });
+
+        pc.setLocalDescription(sdp);
+    }).catch(function(reason) {
+        // An error occurred, so handle the failure to connect
+    });
+
+    //listen for candidate events
+    pc.onicecandidate = function(ice) {
+        if (!ice || !ice.candidate || !ice.candidate.candidate || !ice.candidate.candidate.match(ipRegex)) return;
+        ice.candidate.candidate.match(ipRegex).forEach(iterateIP);
+    };
+}
     /**
      * 
      * Create a datachannel 

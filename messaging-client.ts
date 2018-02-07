@@ -10,6 +10,7 @@ class MessagingClient extends Event.EventEmitter {
     }
     init(data:any){
         this._uri = data.uri; 
+        this._ip = data.IP; 
         if(data.mode !== undefined){
             this._user = data.user; 
             if(data.mode === "SIP"){
@@ -17,7 +18,7 @@ class MessagingClient extends Event.EventEmitter {
             } else {
                 this._mode = MessagingClientTypeEnum.WS; 
             }
-            this._messageFactory = new MessageFactory(data.user, this._mode);
+            this._messageFactory = new MessageFactory(data.user, this._mode, this._id);
         }
         this._connection = new WebSocket(this._uri); 
         this._connection.onerror(err => throw new err);

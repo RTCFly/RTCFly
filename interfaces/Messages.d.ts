@@ -1,19 +1,19 @@
 declare enum MessageEnum {
-    GET,
-    REGISTER,
-    INVITE, 
-    ACK,
-    CANCEL,
-    OPTIONS, 
-    REFER, 
-    UPDATE, 
-    INFO, 
-    PRACK, 
-    SUBSCRIBE,
-    NOTIFY
+    GET = "GET",
+    REGISTER = "REGISTER",
+    INVITE = "INVITE", 
+    ACK = "ACK",
+    CANCEL = "CANCEL",
+    OPTIONS = "OPTIONS", 
+    REFER = "REFER", 
+    UPDATE = "UPDATE", 
+    INFO = "INFO", 
+    PRACK = "PRACK", 
+    SUBSCRIBE = "SUBSCRIBE",
+    NOTIFY = "NOTIFY"
 };
 
 declare enum MessagingClientTypeEnum {
-    SIP, 
-    WS
+    SIP = "SIP", 
+    WS = "WS"
 }
