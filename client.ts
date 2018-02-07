@@ -30,7 +30,6 @@ class Client {
     private _iceServers:Array<any> = []; 
     private _devices:Array<IMediaDeviceInfo>;
     private _messagingClient:any;
-    private _
     
     public peerConnection: IPeerConnection;
 
@@ -56,7 +55,7 @@ class Client {
         log.debug("initalizing", data);
         if(data !== undefined){
             if(data.uri !== undefined){
-                this._messagingClient.init({uri:data.uri, data.mode});
+                this._messagingClient.init({uri:data.uri, data.mode, user:user});
             }
             if(data.iceServers){
                 this._iceServers = data.iceServers;
