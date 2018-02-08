@@ -1,5 +1,6 @@
-cp -a ../dist ../E2E/testproject/src/scripts
-cd ../E2E/testproject 
+
+cp -a dist E2E/testproject/src/scripts
+cd E2E/testproject 
 npm install 
 npm run build 
 cd ../.. 
