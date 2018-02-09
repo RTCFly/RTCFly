@@ -1,28 +1,13 @@
-import { getUserMedia, RTCPeerConnection, enumerateDevices, onDeviceChange } from 'flyadapter';
 
+import Services from './services';
 
 import Client from './client';
 import Server from './server';
 import {MessageType, Message, MessageDirection} from './entities/Message';
 import { MessagingClient } from './messaging-client';
 
-class RTC implements IRTC{
-    public getUserMedia;
-    public RTCPeerConnection;
-    public enumerateDevices;
-    public onDeviceChange; 
-    constructor(getUserMedia, RTCPeerConnection, enumerateDevices,onDeviceChange){
-        this.getUserMedia = getUserMedia; 
-        this.RTCPeerConnection = RTCPeerConnection;
-        this.enumerateDevices = enumerateDevices;
-        this.onDeviceChange = onDeviceChange;
-    }
-    createPeerConnection(config){
-        return new this.RTCPeerConnection(config);
-    }
-}
-
-const client = (settings) => new Client(settings, new RTC(getUserMedia, RTCPeerConnection, enumerateDevices), MessagingClient);
+const services = new Services();
+const client = (settings) => new Client(settings, services, MessagingClient);
 //const server = (handler) => Server(handler);
 export {
     client,

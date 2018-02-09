@@ -5,12 +5,12 @@ class MessageFactory {
     private _user:string; 
     private _ip:string; 
     
-    constructor(user:string, mode:MessagingClientTypeEnum, ip:string){
+    public init(user:string, mode:MessagingClientTypeEnum, ip:string) : void {
         this._user = user; 
         this._mode = mode;
         this._ip = ip; 
     }
-    get(type:MessageEnum, data:any){
+    public get(type:MessageEnum, data:any){
         switch(type){
             case MessageEnum.REGISTER:
                 break; 
@@ -18,4 +18,4 @@ class MessageFactory {
     }
 }
 
-export { messageFactory };
+export { MessageFactory };

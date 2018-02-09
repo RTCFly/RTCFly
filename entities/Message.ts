@@ -44,15 +44,13 @@ export class Message {
         header += "Max-Forwards: 70\n";
         
         CSeq++;
-        header += "CSeq: " + CSeq + " " + messageType = "\n";
+        header += "CSeq: " + CSeq + " " + messageType + "\n";
         
         header += "Allow: ACK,CANCEL,BYE,OPTIONS,INFO,NOTIFY,INVITE\n";
         
         
         header += "User-Agent: RTCFly/1.0.0\n";
         header += "Content-Length: 0";
-        
-        
      
     }
     private _getSip() : string {
