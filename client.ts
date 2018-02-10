@@ -36,7 +36,6 @@ class Client {
     private _messagingClient:any;
     private _userIP:string; 
     
-    public peerConnection: IPeerConnection;
 
     private _rtc: IRTC;
     private _ip: any; 
@@ -122,10 +121,10 @@ class Client {
      */
     public createDataChannel(options:any) : DataChannel{
         this._logger.log("creating data channel", options);
-        if(!this.peerConnection){
+        if(!this._rtc.peerConnection){
             throw new Error("PeerConnection is not initialized");
         }
-        return new DataChannel(options, this.peerConnection);
+        return new DataChannel(options, this._rtc.peerConnection);
     }
     /**
      * Reject a new call that the user is recieving
@@ -135,7 +134,7 @@ class Client {
         this._logger.log("rejecting call");
         this._localVideo = null; 
         this._remoteVideo = null; 
-        this.peerConnection = null;
+        this._rtc.rejectCall();
         this.events.callEvent("rejectCall")(); 
     }
     /**
@@ -145,10 +144,10 @@ class Client {
      */
     public handleSenderStream(message: Message): void {
         this._logger.log("handle sender stream", message);
-        this.processIceCandidate(message);
+        this._rtc.processIceCandidate(message);
         if (message.Type === MessageType.SessionDescription) {
             this._logger.log("handle session description", message);
-            this.peerConnection.setRemoteDescription(message.data).catch(this.events.callEvent("error"));
+            this._rtc.setRemoteDescription(message.data);
         }
     }
     
@@ -165,13 +164,13 @@ class Client {
                     this._localVideo.setStream(stream, true);
                     this._localVideo.play();
                 }
-                this.setupPeerConnection(stream);
+                this._rtc.setupPeerConnection(stream);
             }).catch((err: Error) => {
                 log.error("could not get user media", err);
                 this.events.callEvent("userMediaError")(err);
             });
         } else {
-            this.setupPeerConnection();
+            this._rtc.setupPeerConnection();
         }
 
     }
@@ -182,7 +181,7 @@ class Client {
      */
     public handleTargetStream(message: Message) {
         this._logger.log("handle target stream", message);
-        this.processIceCandidate(message);
+        this._rtc.processIceCandidate(message);
         if (message.Type === MessageType.SessionDescription) {
             this._logger.log("handle session description");
             if(this._mediaConstraints.video !== undefined 
@@ -193,64 +192,17 @@ class Client {
                     this._localVideo.setStream(stream, true);
                     this._localVideo.play();
                 }
-                this.setupPeerConnection(stream, message.data);
+                this._rtc.setupPeerConnection(stream, message.data);
                 }).catch(err =>{
                     log.error("getUserMedia failed", err);
                     this.events.callEvent("userMediaError")(err);
                 });
             } else {
-                this.setupPeerConnection();
+                this._rtc.setupPeerConnection();
             }
         }
     }
-    private processIceCandidate(message:Message){
-        log.info("processIceCandidate", message);
-         if (message.Type === MessageType.Candidate) {
-             log.info("addIceCandidate", message);
-            if (this.peerConnection) {
-                this.peerConnection.addIceCandidate(message.data).catch(err=>{
-                    this._logger.log("could not add ice candidate",err);
-                    this.events.callEvent("error")(err);
-                });
-            }
-        }
-    }
-    private setupPeerConnection(stream?: IMediaStream, remoteDescription?: Object): void {
-        log.info("setting peerConnection", stream, remoteDescription);
-        this.peerConnection = this._rtc.createPeerConnection({
-            iceServers:this._iceServers
-        });
-        this.peerConnection.ondatachannel = event => this.events.callEvent("datachannel")(event);
-        this.events.callEvent("peerConnectionCreated")();
-        this.setPeerConnectionCallbacks();
-        log.info("adding stream");
-        if(stream !== undefined){
-            this.peerConnection.addStream(stream);
-        }
-        if (remoteDescription) {
-            this.createTargetSession(remoteDescription);
-        }
-        else {
-            this.createCallSession();
-        }
-    }
-
-    private setPeerConnectionCallbacks(): void {
-        log.info("setting peerConnection callbacks");
-        this.peerConnection.onicecandidate = function (event: any)  {
-            log.info("add ice candidate", event);
-            this.events.callEvent("emitIceCandidate")(event.candidate);
-        }.bind(this);
-        this.peerConnection.onaddstream = function (stream: any) {
-            log.info("on add remote stream", stream);
-            if (this._remoteVideo) {
-                this._remoteVideo.pause();
-                this._remoteVideo.setStream(stream.stream);
-                this._remoteVideo.play();
-            }
-        }.bind(this);
-    }
-
+    
     /**
      * Answer the call
      * @param local {IHTMLMediaElement}
@@ -301,52 +253,16 @@ class Client {
             this._remoteVideo.stop(); 
             this._remoteVideo = null;
         }
-        if(this.peerConnection){
-            this.peerConnection = null; 
-        }
+        this._rtc.reset();
          
         this.events.callEvent("endCall")();
     }
 
-    /**
-     * Set up the target WebRTC session
-     * Needs to be reimplemented with await
-     * @param remoteDescription {RTCSessionDescription}
-     */
-    private createTargetSession(remoteDescription: Object) {
-        log.info("creating target session", remoteDescription);
-        this.peerConnection.setRemoteDescription(remoteDescription).then(() => {
-            log.info("remote description set");
-            this.peerConnection.createAnswer().then((answer: Object) => {
-                log.info("creating answer", answer);
-                this.peerConnection.setLocalDescription(answer).catch((setLocalDescriptionError: Error) => {
-                    log.info("local description set");
-                    this.events.callEvent("error")(setLocalDescriptionError);
-                });
-                this.events.callEvent("emitTargetAnswer")(answer);
-            }).catch((createAnswerError: Error) => {
-                log.error("create answer error", createAnswerError);
-                this.events.callEvent("error")(createAnswerError);
-            });
-        }).catch((setRemoteDescriptionError: Error) => {
-                log.error("set remote description error", setRemoteDescriptionError);
-            this.events.callEvent("error")(setRemoteDescriptionError);
-        });
-
-
-    }
+    
 
     private createCallSession() {
         log.info("creating call session");
-        var offer = this.peerConnection.createOffer().then((offer:any)=>{
-            log.info("created offer", offer);
-            this.peerConnection.setLocalDescription(offer);
-            this.events.callEvent("emitSenderDescription")(offer);
-            this.peerConnection.setLocalDescription(offer);
-        }).catch((err:Error)=>{
-            log.error("create call session error", err);
-            this.events.callEvent("error")(err);
-        });
+        this._rtc.createSession();
     }
     /**
      * Get the VideoWrapper for the local video
