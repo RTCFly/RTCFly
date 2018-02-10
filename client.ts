@@ -4,26 +4,6 @@ import DataChannel from './DataChannel';
 import { Message, MessageType, MessageDirection } from './entities/Message';
 
 
-class ClientEvents {
-    public eventMap: any; 
-    
-    private _logger:any;
-    constructor({
-        logger
-    }){
-        this.eventMap = {};
-        this._logger = logger;
-    }
-    callEvent(event){
-        this._logger.log("calling event", event);
-        if(this.eventMap[event]){
-            return this.eventMap[event];
-        } else {
-            return function(){}
-        }
-    }
-    
-}
 
 class Client {
 
@@ -44,15 +24,14 @@ class Client {
     constructor(settings: any, {
         rtc,
         ip,
-        logger
+        logger,
+        events
     }, messagingClient:MessagingClient) {
         
         this._rtc = rtc; 
         this._ip = ip; 
         this._logger = logger; 
-        this.events = new ClientEvents({
-            logger
-        }); 
+        this.events = events;
         this._messagingClient = new MessagingClient(); 
     }
     private enumerateDevices() : void {
@@ -228,16 +207,6 @@ class Client {
         this.events.callEvent("answerCall")(this.events.callEvent("error"));
     }
     
-    public async getDevices(){
-        try{
-        const devices  = await this._rtc.enumerateDevices();
-        console.log("donkey");
-        return  devices; 
-        }catch(err){
-            return [];
-        }
-    }
-    
     /**
      * End the current call
      */
@@ -292,7 +261,7 @@ class Client {
     
     public on(eventName:string, action:Function) {
         log.info("adding event", eventName);
-        this.events.eventMap[eventName] = action; 
+        this.events.setEvent(eventName, action); 
     }
 
 

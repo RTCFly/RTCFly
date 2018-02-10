@@ -3,17 +3,20 @@ class RTC implements IRTC{
     public RTCPeerConnection;
     public enumerateDevices;
     public onDeviceChange; 
+    private logger; 
     public peerConnection: IPeerConnection;
     constructor({
         getUserMedia, 
         RTCPeerConnection, 
         enumerateDevices,
-        onDeviceChange
+        onDeviceChange,
+        logger
     }){
         this.getUserMedia = getUserMedia; 
         this.RTCPeerConnection = RTCPeerConnection;
         this.enumerateDevices = enumerateDevices;
         this.onDeviceChange = onDeviceChange;
+        this._logger = logger; 
     }
     createPeerConnection(config){
         return new this.RTCPeerConnection(config);
