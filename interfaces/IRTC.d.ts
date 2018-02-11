@@ -1,10 +1,8 @@
 declare interface IRTC {
     peerConnection:IPeerConnection;
-    getUserMedia(mediaConstrains:any);
+
+    createPeerConnection(config);
     RTCPeerConnection:any; 
-    createPeerConnection(config); 
-    enumerateDevices(); 
-    onDeviceChange(callback);
     startCall(params:ICallParams);
     reset();
     handleSenderStream(message:any);

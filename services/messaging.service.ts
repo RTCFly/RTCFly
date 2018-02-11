@@ -1,13 +1,17 @@
-class MessagingService extends Event.EventEmitter {
+class MessagingService {
     private _uri:string; 
     private _mode:MessagingClientTypeEnum;
-    private _connection:WebSocket; 
+    private _connection:any; 
     private _user:string; 
-    private _messageFactory:MessageFactory;
+    private _messageFactory:any;
+    private _WebSocket:any; 
+    private _ip:string; 
     constructor({
-        messageFactory
+        messageFactory,
+        WebSocket
     }){
         this._messageFactory = messageFactory;
+        this._WebSocket = WebSocket;
     }
     init(data:any){
         this._uri = data.uri; 
@@ -21,24 +25,24 @@ class MessagingService extends Event.EventEmitter {
                 this._mode = MessagingClientTypeEnum.WS; 
             }
         }
-        this._connection = new WebSocket(this._uri); 
+        this._connection = new this._WebSocket(this._uri); 
         this._connection.onerror(err => {throw new err});
         this._connection.onmessage(event => this._onMessage);
         this._connection.onopen(event => this._onOpen);
         this._connection.onclose(event => this._onClose);
     }
-    private _onMessage(event:Event){
+    private _onMessage(event:IEvent){
         
     }
-    private _onOpen(event:Event){
-        const registerMessage = messageFactory(MessageEnum.REGISTER);
+    private _onOpen(event:IEvent){
+        const registerMessage = this._messageFactory(MessageEnum.REGISTER);
         this._connection.send(registerMessage.get(this._mode));
     }
-    private _onClose(event:Event){
+    private _onClose(event:IEvent){
         
     }
 }
 
 export {
-    MessagingClient
+    MessagingService
 }

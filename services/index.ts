@@ -10,6 +10,10 @@ import { MessagingService } from './messaging.service';
 import { MessageFactory } from './message.factory';
 import { Events } from './events.service';
 
+import { VideoWrapper } from '../entities/VideoWrapper';
+
+const WebSocket = require('websocket');
+
 
 export default () =>{
         
@@ -19,20 +23,24 @@ export default () =>{
     const events = new Events({
         logger
     });
-    const rtc  = new RTC({
+    const rtc  = new RTCService({
         getUserMedia, 
         RTCPeerConnection, 
         enumerateDevices, 
         onDeviceChange,
-        logger
+        logger,
+        events,
+        VideoWrapper
     }); 
     const ip = new IPService({
-        rtc
+        RTCPeerConnection
     });
     const messageFactory = new MessageFactory();
     const messagingService = new MessagingService({
-        messageFactory
+        messageFactory,
+        WebSocket
     });
+    
     return {
         rtc,
         ip, 

@@ -1,12 +1,12 @@
 class IPService {
-    private _rtc: IRTC;
+    private _RTCPeerConnection: any;
     constructor({
-        rtc
+        RTCPeerConnection
     }){
-        this._rtc = rtc; 
+        this._RTCPeerConnection = RTCPeerConnection; 
     }
-    obtainIP(onNewIP:callback) : void{
-            const pc = new this._rtc.peerConnection({
+    obtainIP(onNewIP:Function) : void{
+            const pc = new this._RTCPeerConnection({
                 iceServers: []
             });
             const localIPs = {};

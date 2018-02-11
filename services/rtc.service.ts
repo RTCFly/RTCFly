@@ -1,11 +1,17 @@
-class RTC implements IRTC{
+class RTCService implements IRTC{
     private _initLocalSession:Function;
-    private _RTCPeerConnection;
+    public RTCPeerConnection;
     private _enumerateDevices;
+    private _events:IEvents;
     private onDeviceChange; 
+    private _mediaConstraints :any; 
     private _iceServers:Array<any> = []; 
-    private logger; 
+    private _logger; 
+    private _VideoWrapper:any;
     public peerConnection: IPeerConnection;
+    
+    private _localVideo: IVideoWrapper;
+    private _remoteVideo: IVideoWrapper;
     
     
     constructor({
@@ -13,13 +19,17 @@ class RTC implements IRTC{
         RTCPeerConnection, 
         enumerateDevices,
         onDeviceChange,
-        logger
+        logger,
+        events,
+        VideoWrapper
     }){
-        this.initLocalSession = this._rtc.adaptGetUserMedia(getUserMedia); 
+        this._initLocalSession = this.adaptGetUserMedia(getUserMedia); 
         this.RTCPeerConnection = RTCPeerConnection;
-        this.enumerateDevices = enumerateDevices;
+        this._enumerateDevices = enumerateDevices;
         this.onDeviceChange = onDeviceChange;
         this._logger = logger; 
+        this._events = events; 
+        this._VideoWrapper = VideoWrapper;
     }
     public init (data:any){
         if(data.iceServers){
@@ -43,15 +53,15 @@ class RTC implements IRTC{
                 }
                 this.setupPeerConnection(stream, remoteDescription);
                 }).catch(err =>{
-                    log.error("getUserMedia failed", err);
-                    this.events.callEvent("userMediaError")(err);
+                    this._logger.error("getUserMedia failed", err);
+                    this._events.callEvent("userMediaError")(err);
                 });
             } else {
                 this.setupPeerConnection(null, remoteDescription);
             }
         };
     }
-    public startCall(params:ICallParams, callback:string): void {
+    public startCall(params:ICallParams): void {
         const {video,audio,localElement,remoteElement,id} = params; 
         this._localVideo = null;
         this._remoteVideo = null;
@@ -60,30 +70,32 @@ class RTC implements IRTC{
             video
         };
         if (localElement !== undefined){
-            log.debug("setting local element", localElement);
-            this._localVideo = new VideoWrapper(localElement);
+            this._logger.log("setting local element", localElement);
+            this._localVideo = new this._VideoWrapper(localElement);
         }
         if (remoteElement !== undefined){
-            log.debug("setting remote element", remoteElement);
-            this._remoteVideo = new VideoWrapper(remoteElement);
+            this._logger.log("setting remote element", remoteElement);
+            this._remoteVideo = new this._VideoWrapper(remoteElement);
         }
     }
     public setRemoteDescription(data:any){
-            this.peerConnection.setRemoteDescription(data).catch(this.events.callEvent("error"));
+            this.peerConnection.setRemoteDescription(data).catch(this._events.callEvent("error"));
     }
     public reset(){
         if(this.peerConnection){
             this.peerConnection = null; 
         }
     }
-    public processIceCandidate(message:Message){
-        log.info("processIceCandidate", message);
-         if (message.Type === MessageType.Candidate) {
-             log.info("addIceCandidate", message);
+    public processIceCandidate(message:IMessage){
+        this._logger.log("processIceCandidate", message);
+        
+        //TODO use correct enum 
+         if (message.Type === "icecandidate") {
+             this._logger.log("addIceCandidate", message);
             if (this.peerConnection) {
                 this.peerConnection.addIceCandidate(message.data).catch(err=>{
                     this._logger.log("could not add ice candidate",err);
-                    this.events.callEvent("error")(err);
+                    this._events.callEvent("error")(err);
                 });
             }
         }
@@ -95,23 +107,23 @@ class RTC implements IRTC{
      * @param remoteDescription {RTCSessionDescription}
      */
     private createTargetSession(remoteDescription: Object) {
-        log.info("creating target session", remoteDescription);
+        this._logger.log("creating target session", remoteDescription);
         this.peerConnection.setRemoteDescription(remoteDescription).then(() => {
-            log.info("remote description set");
+            this._logger.log("remote description set");
             this.peerConnection.createAnswer().then((answer: Object) => {
-                log.info("creating answer", answer);
+                this._logger.log("creating answer", answer);
                 this.peerConnection.setLocalDescription(answer).catch((setLocalDescriptionError: Error) => {
-                    log.info("local description set");
-                    this.events.callEvent("error")(setLocalDescriptionError);
+                    this._logger.log("local description set");
+                    this._events.callEvent("error")(setLocalDescriptionError);
                 });
-                this.events.callEvent("emitTargetAnswer")(answer);
+                this._events.callEvent("emitTargetAnswer")(answer);
             }).catch((createAnswerError: Error) => {
-                log.error("create answer error", createAnswerError);
-                this.events.callEvent("error")(createAnswerError);
+                this._logger.error("create answer error", createAnswerError);
+                this._events.callEvent("error")(createAnswerError);
             });
         }).catch((setRemoteDescriptionError: Error) => {
-                log.error("set remote description error", setRemoteDescriptionError);
-            this.events.callEvent("error")(setRemoteDescriptionError);
+                this._logger.error("set remote description error", setRemoteDescriptionError);
+            this._events.callEvent("error")(setRemoteDescriptionError);
         });
 
 
@@ -119,24 +131,24 @@ class RTC implements IRTC{
     public createSession (){
         
         this.peerConnection.createOffer().then((offer:any)=>{
-            log.info("created offer", offer);
+            this._logger.debug("created offer", offer);
             this.peerConnection.setLocalDescription(offer);
-            this.events.callEvent("emitSenderDescription")(offer);
+            this._events.callEvent("emitSenderDescription")(offer);
             this.peerConnection.setLocalDescription(offer);
         }).catch((err:Error)=>{
-            log.error("create call session error", err);
-            this.events.callEvent("error")(err);
+            this._logger.error("create call session error", err);
+            this._events.callEvent("error")(err);
         });
     }
     public setupPeerConnection(stream?: IMediaStream, remoteDescription?: Object): void {
-        log.info("setting peerConnection", stream, remoteDescription);
+        this._logger.log("setting peerConnection", stream, remoteDescription);
         this.peerConnection = this.createPeerConnection({
             iceServers:this._iceServers
         });
-        this.peerConnection.ondatachannel = event => this.events.callEvent("datachannel")(event);
-        this.events.callEvent("peerConnectionCreated")();
+        this.peerConnection.ondatachannel = event => this._events.callEvent("datachannel")(event);
+        this._events.callEvent("peerConnectionCreated")();
         this.setPeerConnectionCallbacks();
-        log.info("adding stream");
+        this._logger.log("adding stream");
         if(stream !== undefined){
             this.peerConnection.addStream(stream);
         }
@@ -144,18 +156,18 @@ class RTC implements IRTC{
             this.createTargetSession(remoteDescription);
         }
         else {
-            this.createCallSession();
+            this.createSession();
         }
     }
 
     public setPeerConnectionCallbacks(): void {
-        log.info("setting peerConnection callbacks");
+        this._logger.log("setting peerConnection callbacks");
         this.peerConnection.onicecandidate = function (event: any)  {
-            log.info("add ice candidate", event);
-            this.events.callEvent("emitIceCandidate")(event.candidate);
+            this._logger.log("add ice candidate", event);
+            this._events.callEvent("emitIceCandidate")(event.candidate);
         }.bind(this);
         this.peerConnection.onaddstream = function (stream: any) {
-            log.info("on add remote stream", stream);
+            this._logger.log("on add remote stream", stream);
             if (this._remoteVideo) {
                 this._remoteVideo.pause();
                 this._remoteVideo.setStream(stream.stream);
@@ -163,22 +175,36 @@ class RTC implements IRTC{
             }
         }.bind(this);
     }
-    private handleTargetStream(message: Message){
+    public handleTargetStream(message: IMessage){
         this.processIceCandidate(message);
-        if (message.Type === MessageType.SessionDescription) {
+        //TODO Use correct enum
+        if (message.Type === "sessiondescription") {
             this._logger.log("handle session description");
-            this.initLocalSession(data.message);
+            this._initLocalSession(message.data);
         }
     }
-    public handleSenderStream(message:Message): void {
+    public handleSenderStream(message:IMessage): void {
         this.processIceCandidate(message);
-        if (message.Type === MessageType.SessionDescription) {
+        //TODO Use correct enum
+        if (message.Type === "sessiondescription") {
             this._logger.log("handle session description", message);
             this.setRemoteDescription(message.data);
         }
     }
-    private handleTargetAccept(): void {
+    public handleTargetAccept(): void {
         this._initLocalSession();
+    }
+    public getLocalVideo(): IVideoWrapper{
+        if(this._localVideo){
+            return this._localVideo;
+        }
+        return undefined;
+    }
+    public getRemoteVideo(): IVideoWrapper{
+        if(this._remoteVideo){
+            return this._remoteVideo;
+        }
+        return undefined;
     }
 }
 

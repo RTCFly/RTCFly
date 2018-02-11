@@ -1,6 +1,6 @@
 class LoggerService {
     
-    private _logger : any; 
+    private _log : any; 
     
     constructor({
         log
@@ -16,9 +16,11 @@ class LoggerService {
     public log(params) : void {
         this._log.debug(...params)
     }
+    public error(params) : void {
+        this._log.error(...params);
+    }
     
 }
-
 export {
-    LogService
+    LoggerService
 };
