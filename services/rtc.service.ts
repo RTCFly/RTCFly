@@ -1,10 +1,13 @@
 class RTC implements IRTC{
-    public getUserMedia;
-    public RTCPeerConnection;
-    public enumerateDevices;
-    public onDeviceChange; 
+    private _initLocalSession:Function;
+    private _RTCPeerConnection;
+    private _enumerateDevices;
+    private onDeviceChange; 
+    private _iceServers:Array<any> = []; 
     private logger; 
     public peerConnection: IPeerConnection;
+    
+    
     constructor({
         getUserMedia, 
         RTCPeerConnection, 
@@ -12,17 +15,41 @@ class RTC implements IRTC{
         onDeviceChange,
         logger
     }){
-        this.getUserMedia = getUserMedia; 
+        this.initLocalSession = this._rtc.adaptGetUserMedia(getUserMedia); 
         this.RTCPeerConnection = RTCPeerConnection;
         this.enumerateDevices = enumerateDevices;
         this.onDeviceChange = onDeviceChange;
         this._logger = logger; 
     }
+    public init (data:any){
+        if(data.iceServers){
+            this._iceServers = data.iceServers;
+        } else {
+            this._iceServers = [];
+        }
+    }
     createPeerConnection(config){
         return new this.RTCPeerConnection(config);
     }
-    public rejectCall(){
-        this.peerConnection = null;
+    private adaptGetUserMedia(getUserMedia:Function){
+        return remoteDescription =>{
+            if(this._mediaConstraints.video !== undefined 
+            || this._mediaConstraints.audio !== undefined){
+                getUserMedia(this._mediaConstraints).then((stream:any)=>{
+                    this._logger.log("getUserMedia", stream);
+                if (this._localVideo) {
+                    this._localVideo.setStream(stream, true);
+                    this._localVideo.play();
+                }
+                this.setupPeerConnection(stream, remoteDescription);
+                }).catch(err =>{
+                    log.error("getUserMedia failed", err);
+                    this.events.callEvent("userMediaError")(err);
+                });
+            } else {
+                this.setupPeerConnection(null, remoteDescription);
+            }
+        };
     }
     public setRemoteDescription(data:any){
             this.peerConnection.setRemoteDescription(data).catch(this.events.callEvent("error"));
@@ -86,7 +113,7 @@ class RTC implements IRTC{
     }
     public setupPeerConnection(stream?: IMediaStream, remoteDescription?: Object): void {
         log.info("setting peerConnection", stream, remoteDescription);
-        this.peerConnection = this._rtc.createPeerConnection({
+        this.peerConnection = this.createPeerConnection({
             iceServers:this._iceServers
         });
         this.peerConnection.ondatachannel = event => this.events.callEvent("datachannel")(event);
@@ -119,7 +146,23 @@ class RTC implements IRTC{
             }
         }.bind(this);
     }
-
+    private handleTargetStream(message: Message){
+        this.processIceCandidate(message);
+        if (message.Type === MessageType.SessionDescription) {
+            this._logger.log("handle session description");
+            this.initLocalSession(data.message);
+        }
+    }
+    public handleSenderStream(message:Message): void {
+        this.processIceCandidate(message);
+        if (message.Type === MessageType.SessionDescription) {
+            this._logger.log("handle session description", message);
+            this.setRemoteDescription(message.data);
+        }
+    }
+    private handleTargetAccept(): void {
+        this._initLocalSession();
+    }
 }
 
 export {

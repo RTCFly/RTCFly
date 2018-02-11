@@ -8,7 +8,6 @@ import { Message, MessageType, MessageDirection } from './entities/Message';
 class Client {
 
     private events: ClientEvents;
-    private _iceServers:Array<any> = []; 
     private _devices:Array<IMediaDeviceInfo>;
     private _messagingClient:any;
     private _userIP:string; 
@@ -39,9 +38,7 @@ class Client {
                 if(data.uri !== undefined){
                     this._messagingClient.init({uri:data.uri, mode:data.mode, user:data.user, IP});
                 }
-                if(data.iceServers){
-                    this._iceServers = data.iceServers;
-                }
+                
                 if(data.debug === true){
                     this._logger.enable();
                 } else if(data.debug === false){
@@ -83,7 +80,6 @@ class Client {
     public rejectCall(){
         this._logger.log("rejecting call");
         this._rtc.reset();
-        this._rtc.rejectCall();
         this.events.callEvent("rejectCall")(); 
     }
     /**
@@ -93,11 +89,7 @@ class Client {
      */
     public handleSenderStream(message: Message): void {
         this._logger.log("handle sender stream", message);
-        this._rtc.processIceCandidate(message);
-        if (message.Type === MessageType.SessionDescription) {
-            this._logger.log("handle session description", message);
-            this._rtc.setRemoteDescription(message.data);
-        }
+        this._rtc.handleSenderStream(message);
     }
     
     /**
@@ -106,21 +98,7 @@ class Client {
      */
     public  handleTargetAccept() {
         this._logger.log("handle target accept");
-        if(this._mediaConstraints.video || this._mediaConstraints.audio){
-            this._rtc.getUserMedia(this._mediaConstraints).then((stream: any) => {
-                this._logger.log("got local media", stream);
-                if (this._localVideo) {
-                    this._localVideo.setStream(stream, true);
-                    this._localVideo.play();
-                }
-                this._rtc.setupPeerConnection(stream);
-            }).catch((err: Error) => {
-                log.error("could not get user media", err);
-                this.events.callEvent("userMediaError")(err);
-            });
-        } else {
-            this._rtc.setupPeerConnection();
-        }
+        this._rtc.handleTargetAccept();
 
     }
     /**
@@ -130,26 +108,7 @@ class Client {
      */
     public handleTargetStream(message: Message) {
         this._logger.log("handle target stream", message);
-        this._rtc.processIceCandidate(message);
-        if (message.Type === MessageType.SessionDescription) {
-            this._logger.log("handle session description");
-            if(this._mediaConstraints.video !== undefined 
-            || this._mediaConstraints.audio !== undefined){
-                this._rtc.getUserMedia(this._mediaConstraints).then((stream:any)=>{
-                    this._logger.log("getUserMedia", stream);
-                if (this._localVideo) {
-                    this._localVideo.setStream(stream, true);
-                    this._localVideo.play();
-                }
-                this._rtc.setupPeerConnection(stream, message.data);
-                }).catch(err =>{
-                    log.error("getUserMedia failed", err);
-                    this.events.callEvent("userMediaError")(err);
-                });
-            } else {
-                this._rtc.setupPeerConnection();
-            }
-        }
+        this._rtc.handleTargetAccept(message);
     }
     
     /**
