@@ -7,10 +7,7 @@ import { Message, MessageType, MessageDirection } from './entities/Message';
 
 class Client {
 
-    private _localVideo: VideoWrapper;
-    private _remoteVideo: VideoWrapper;
     private events: ClientEvents;
-    private _mediaConstraints: any = {}; 
     private _iceServers:Array<any> = []; 
     private _devices:Array<IMediaDeviceInfo>;
     private _messagingClient:any;
@@ -34,20 +31,8 @@ class Client {
         this.events = events;
         this._messagingClient = new MessagingClient(); 
     }
-    private enumerateDevices() : void {
-        this._rtc.enumerateDevices().then(devices => {
-           this._devices = devices;  
-        }).then(() => {
-            this._rtc.onDeviceChange(event => {
-                console.log("onDeviceChange", event);
-                event.target.enumerateDevices(devices =>{
-                     this._devices = devices;  
-                })
-            });
-        });
-    }
+
     public init(data:any){
-        this.enumerateDevices();
         this._ip.obtainIP(IP => {
             this._logger.log("initalizing", data);
             if(data !== undefined){
@@ -75,21 +60,7 @@ class Client {
      */
     public call(params:ICallParams): void {
         this._logger.log("starting call", params);
-        const {video,audio,localElement,remoteElement,id} = params; 
-        this._localVideo = null;
-        this._remoteVideo = null;
-        this._mediaConstraints = {
-            audio, 
-            video
-        };
-        if (localElement !== undefined){
-            this._logger.log("setting local element", localElement);
-            this._localVideo = new VideoWrapper(localElement);
-        }
-        if (remoteElement !== undefined){
-            this._logger.log("setting remote element", remoteElement);
-            this._remoteVideo = new VideoWrapper(remoteElement);
-        }
+        this._rtc.startCall(params);
         this.events.callEvent("callInitialized")(params);
     }
  
@@ -111,8 +82,7 @@ class Client {
      * */
     public rejectCall(){
         this._logger.log("rejecting call");
-        this._localVideo = null; 
-        this._remoteVideo = null; 
+        this._rtc.reset();
         this._rtc.rejectCall();
         this.events.callEvent("rejectCall")(); 
     }
@@ -189,21 +159,7 @@ class Client {
      */
     public answerCall(params: ICallParams): void {
         log.info("answer call", params);
-        this._localVideo = null;
-        this._remoteVideo = null;
-        const {video,audio,localElement,remoteElement} = params; 
-        this._mediaConstraints = {
-            video, 
-            audio
-        };
-        if (localElement !== undefined){
-            log.info("setting local video", localElement);
-            this._localVideo = new VideoWrapper(localElement);
-        }
-        if (remoteElement !== undefined){
-            log.info("setting remote video", remoteElement);
-            this._remoteVideo = new VideoWrapper(remoteElement);
-        }
+        this._rtc.startCall();
         this.events.callEvent("answerCall")(this.events.callEvent("error"));
     }
     
@@ -212,18 +168,7 @@ class Client {
      */
     public endCall(): void {
         log.info("ending call");
-        if(this._localVideo){
-            log.info("stopping local video");
-            this._localVideo.stop(); 
-            this._localVideo = null;
-        }
-        if(this._remoteVideo){
-            log.info("stopping remote video");
-            this._remoteVideo.stop(); 
-            this._remoteVideo = null;
-        }
         this._rtc.reset();
-         
         this.events.callEvent("endCall")();
     }
 
@@ -238,25 +183,16 @@ class Client {
      * @returns {VideoWrapper}
      */
     public getLocalVideo(): VideoWrapper {
-        log.info("getting local video", this._localVideo);
-        if (this._localVideo) {
-            return this._localVideo;
-        } else {
-
-            return undefined;
-        }
+        log.info("getting local video");
+        return this._rtc.getLocalVideo();
     }
     /**
      * Get the VideoWrapper for the remote video
      * @returns {VideoWrapper}
      */
     public getRemoteVideo(): VideoWrapper {
-        log.info("getting remote video", this._remoteVideo);
-        if (this._remoteVideo) {
-            return this._remoteVideo;
-        } else {
-            return undefined;
-        }
+        log.info("getting remote video");
+        return this._rtc.getRemoteVideo;
     }
     
     public on(eventName:string, action:Function) {
