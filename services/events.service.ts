@@ -1,5 +1,5 @@
 
-class Events {
+class Events implements IEvents {
     public eventMap: any; 
     
     private _logger:any;
@@ -9,7 +9,7 @@ class Events {
         this.eventMap = {};
         this._logger = logger;
     }
-    callEvent(event){
+    public callEvent(event){
         this._logger.log("calling event", event);
         if(this.eventMap[event]){
             return this.eventMap[event];

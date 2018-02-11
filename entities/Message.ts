@@ -29,7 +29,8 @@ export class Message {
     public data: Object;
     private _mode:MessagingClientTypeEnum;
     private _uri:string; 
-    constructor(uri:string, ip:stirng){
+    private _ip:string;
+    constructor(uri:string, ip:string){
         this._uri = uri; 
         this._ip = ip; 
     }
@@ -51,11 +52,13 @@ export class Message {
         
         header += "User-Agent: RTCFly/1.0.0\n";
         header += "Content-Length: 0";
+        
+        return header;
      
     }
-    private _getSip() : string {
+    private _getSIP() : string {
         
-        
+        return "";
     }
     
     public get() : string {
@@ -71,8 +74,9 @@ export class MessageRegister extends Message {
     
     private _getSip():string {
         //create generic SIP message stuff
-        super(); 
+       // super(); 
         //create specific stuff for this message type
+        return "";
     }
     
 }

@@ -51,6 +51,23 @@ class RTC implements IRTC{
             }
         };
     }
+    public startCall(params:ICallParams, callback:string): void {
+        const {video,audio,localElement,remoteElement,id} = params; 
+        this._localVideo = null;
+        this._remoteVideo = null;
+        this._mediaConstraints = {
+            audio, 
+            video
+        };
+        if (localElement !== undefined){
+            log.debug("setting local element", localElement);
+            this._localVideo = new VideoWrapper(localElement);
+        }
+        if (remoteElement !== undefined){
+            log.debug("setting remote element", remoteElement);
+            this._remoteVideo = new VideoWrapper(remoteElement);
+        }
+    }
     public setRemoteDescription(data:any){
             this.peerConnection.setRemoteDescription(data).catch(this.events.callEvent("error"));
     }

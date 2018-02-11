@@ -21,7 +21,7 @@ const assert = chai.assert;
 // import 'mocha';
 const handler = new FakeHandler();
 describe('client class', () => {
-    const testClient = new Client(handler, rtc);
+    const testClient = new Client();
     it('should define client class object', () => {
         expect(testClient).to.not.be.an('undefined');
     });

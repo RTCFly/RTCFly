@@ -1,5 +1,5 @@
 
-export default class Video {
+export default class VideoWrapper implements IVideoWrapper {
     /**
      * Wrap video to allow stabler manipulation
      * @param video {HTMLElement}
@@ -59,5 +59,5 @@ export default class Video {
     }
 }
 export {
-    Video
+    VideoWrapper
 };
