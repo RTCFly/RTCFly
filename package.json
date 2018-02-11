@@ -14,7 +14,7 @@
   "scripts": {
     "prepublish": "npm run build",
     "build": "tsc",
-    "test": "mocha -r ts-node/register test.ts",
+    "test": "mocha -r ts-node/register tests/index.ts",
     "E2E": "rm -rf E2E/testproject/src/scripts/dist && cp -a dist E2E/testproject/src/scripts && cd E2E/testproject && npm install && npm run build && cd ../.. && ./node_modules/cucumber/bin/cucumber.js E2E/features",
     "E2E-clean": "toolchain/E2E.sh"
   },
