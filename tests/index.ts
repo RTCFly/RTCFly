@@ -1,4 +1,4 @@
-
+import { eventsServiceTests } from './services/events.service.spec';
 
 import Client from '../client';
 import 'mocha';
@@ -19,6 +19,7 @@ describe('client class', () => {
         expect(testClient).to.not.be.an('undefined');
     });
 });
+eventsServiceTests(expect, assert);
 // callTests(expect,assert);
 // streamTests(expect, assert);
 // videoWrapperTests(expect, assert);
