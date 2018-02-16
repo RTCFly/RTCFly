@@ -1,4 +1,4 @@
-
+import { MessageEnum } from '../entities/MessageEnum';
 
 class MessageFactory {
     private _mode:MessagingClientTypeEnum; 

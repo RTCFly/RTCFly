@@ -1,3 +1,4 @@
+import { MessageEnum } from '../entities/MessageEnum';
 class MessagingService {
     private _uri:string; 
     private _mode:MessagingClientTypeEnum;

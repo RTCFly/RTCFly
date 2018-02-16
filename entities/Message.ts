@@ -1,3 +1,5 @@
+import { MessageEnum } from './MessageEnum';
+
 let CSeq = 0; 
 export enum MessageDirection {
     Sender,
