@@ -1,9 +1,8 @@
 # READ FIRST
-After some careful consideration, we've come to realise that RTCFly doesn't work as well as we want it to in its current form, so we have decided to rebuild. 
+Coming soon. See below for recent updates:
 
-This master branch will be branched into "Legacy" and the project will be replaced with a better one. 
-
-Checkout the `next` branch to see the upcoming project. 
+- implementation of InversifyJS SOLID architecture
+- creation of multiple client types ie SIP, local only etc
 
 
 [![Travis CI](https://travis-ci.org/RTCFly/RTCFly.svg?branch=master)](https://travis-ci.org/RTCFly/RTCFly)

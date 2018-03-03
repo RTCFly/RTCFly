@@ -1,13 +1,11 @@
 import { injectable, inject } from 'inversify';
-import { IWebClient, 
-         IClientConfig,
-         IMessenger } from '@rtcfly/interfaces';
+import { IMessenger } from '@rtcfly/messenger';
+import { EventEmitter } from '@rtcfly/entities/eventemitter';
 import { TYPES } from '@rtcfly/types';
+import { IWebClient, IClientConfig } from '@rtcfly/interfaces';
 @injectable()
-export class SipMessenger implements IMessenger {
-
+export class GenericMessenger extends EventEmitter implements IMessenger{
     @inject(TYPES.WebClient) private _webClient: IWebClient;
-    
     
     register(config:IClientConfig){
         
@@ -48,7 +46,5 @@ export class SipMessenger implements IMessenger {
     update(){
         
     }
-    on(action:string, callback:Function) :void {
-        
-    }
+    
 }

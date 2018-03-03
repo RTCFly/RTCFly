@@ -7,13 +7,7 @@ export class WebSocketsClient implements IWebClient {
     
     @inject(TYPES.WindowWebSocket) private _windowWebSocket : IWindowWebSocket;
     
-    send(){
-        
-    }
-    connect(){
-        
-    }
-    close(){
+    handleMessage(){
         
     }
     

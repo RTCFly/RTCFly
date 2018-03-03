@@ -12,7 +12,7 @@ import { IUserAgent,
 
 
 @injectable()
-export class UserAgent extends EventEmitter implements IUserAgent {
+export class UserAgent implements IUserAgent {
     
     @inject(TYPES.Messenger) private _messenger: IMessenger;
     @inject(TYPES.RTCService) private _rtcService :IRTCService;
@@ -36,5 +36,8 @@ export class UserAgent extends EventEmitter implements IUserAgent {
         this._messenger.register(configuration.clientConfig);
     }; 
     
-
+    getMessenger() :IMessenger{
+        return this._messenger;
+    }
+    
 }

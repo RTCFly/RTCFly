@@ -4,6 +4,7 @@ export interface IUserAgent {
     reject(): void; 
     createDataChannel():IDataChannel;
     init(configuration:IRTCSession): void; 
+    getMessenger(): IMessenger;
 }
 export interface IDataChannel {
     
@@ -27,15 +28,15 @@ export interface IMessenger {
     refer();
     message();
     update();
+    on(event:string, callback:Function);
 }
 export interface IWindowWebSocket{
     close();
     send();
 }
 export interface IWebClient {
-    send();
-    connect();
-    close();
+    handleMessage();
+    
 }
 export interface IIPService {
     getIP():string;
