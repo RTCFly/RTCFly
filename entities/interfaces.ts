@@ -30,6 +30,10 @@ export interface IMessenger {
     update();
     on(event:string, callback:Function);
 }
+export interface IMediaWrapper {
+    getLocalVideo():IVideoWrapper;
+    getRemoteVideo():IVideoWrapper;
+}
 export interface IWindowWebSocket{
     close();
     send();
