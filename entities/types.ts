@@ -3,7 +3,9 @@ const TYPES = {
     RTCService: Symbol.for("RTCService"),
     Messenger: Symbol.for("Messenger"),
     WebClient: Symbol.for("WebClient"),
-    IPService: Symbol.for("IPService")
+    IPService: Symbol.for("IPService"),
+    WindowWebSocket: Symbol.for("WindowWebSocket"),
+    ErrorService: Symbol.for("ErrorService")
 };
 
 export { TYPES };

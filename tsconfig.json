@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "baseUrl":".",
         "target": "es5",
         "lib": ["es6"],
         "types": ["reflect-metadata"],
@@ -7,6 +8,12 @@
         "moduleResolution": "node",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "outDir":"./dist"
+        "outDir": "./dist",
+        "paths": {
+            "@rtcfly/interfaces": ["entities/interfaces.ts"],
+            "@rtcfly/types": ["entities/types.ts"],
+            "@rtcfly/*":["./"]
+            
+        }
     }
 }

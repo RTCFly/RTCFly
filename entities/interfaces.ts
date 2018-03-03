@@ -1,19 +1,20 @@
 export interface IUserAgent {
     call(params:ICallParams): void; 
-    on(event:string, callback:Function): void; 
     answer(params:ICallParams): void;
     reject(): void; 
     createDataChannel():IDataChannel;
-    init(configuration:IRTCConfiguration): void; 
+    init(configuration:IRTCSession): void; 
 }
-
+export interface IDataChannel {
+    
+}
 export interface IRTCService {
-    initSession();
+    initSession(config:IRTCConfiguration);
     getDevices();
 }
 
 export interface IMessenger {
-    register();
+    register(config:IClientConfig);
     invite();
     ack();
     cancel();
@@ -26,6 +27,10 @@ export interface IMessenger {
     refer();
     message();
     update();
+}
+export interface IWindowWebSocket{
+    close();
+    send();
 }
 export interface IWebClient {
     send();
@@ -57,6 +62,20 @@ export interface IMediaStream {
     stream: Object;
 }
 
+export interface IRTCSession {
+    rtcConfiguration:IRTCConfiguration;
+    clientConfig:IClientConfig;
+}
 export interface IRTCConfiguration {
     iceServers:Array<any>;
+}
+
+
+export interface IClientConfig {
+    ServerURI:string;
+}
+
+export interface IErrorService {
+    missingConfig();
+    invalidConfig(missingField:string);
 }
