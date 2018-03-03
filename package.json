@@ -3,6 +3,12 @@
   "author": "rtcfly",
   "version": "1.0.0",
   "description": "Stable, fun, WebRTC",
+  "scripts": {
+    "dist": "npm run lint && tsc",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'",
+    "test": "yarn lint && jest"
+
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/RTCFly/RTCFly"
@@ -11,18 +17,19 @@
     "url": "https://github.com/RTCFly/RTCFly/issues"
   },
   "main": "dist/index.js",
-  "scripts": {
-    "prepublish": "npm run build",
-      },
   "license": "MIT",
-  "dependencies": {
-
-  },
-  "devDependencies": {
-
-  },
   "keywords": [
     "webrtc"
   ],
-  "analyze": true
+  "analyze": true,
+  "devDependencies": {
+    "@types/node": "^9.4.6",
+    "jest": "^22.4.2",
+    "tslint": "^5.9.1",
+    "typescript": "^2.7.2"
+  },
+  "dependencies": {
+    "inversify": "^4.10.0",
+    "reflect-metadata": "^0.1.12"
+  }
 }

@@ -1,0 +1,63 @@
+{
+  "rules": {
+    "max-line-length": {
+      "options": [
+        120
+      ]
+    },
+    "new-parens": true,
+    "no-arg": true,
+    "no-namespace": true,
+    "no-empty-interface": true,
+    "no-conditional-assignment": true,
+    "no-consecutive-blank-lines": false,
+    "no-console": {
+      "severity": "warning",
+      "options": [
+        "debug",
+        "info",
+        "log",
+        "time",
+        "timeEnd",
+        "trace"
+      ]
+    },
+    "only-arrow-functions": {
+      "options": [
+        "allow-declarations",
+        "allow-named-functions"
+      ]
+    },
+    "radix": true,
+    "prefer-const": true,
+    "no-empty":true,
+    "semicolon": {
+      "options": [
+        "always"
+      ]
+    },
+    "triple-equals": {
+      "options": ["allow-null-check"]
+    },
+    "typedef": [
+      true,
+      "call-signature",
+      "arrow-call-signature",
+      "parameter",
+      "arrow-parameter",
+      "property-declaration",
+      "member-variable-declaration"
+    ],
+    "trailing-comma": {
+      "options": {
+        "multiline": "never",
+        "singleline": "never"
+      }
+    },
+    "use-isnan":true,
+    "ban-comma-operator": true,
+    "no-invalid-this": [true],
+    "no-misused-new": true,
+    "no-string-throw": true
+  }
+}

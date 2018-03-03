@@ -1,0 +1,74 @@
+Arguments: 
+  /home/ubuntu/.nvm/versions/node/v6.11.2/bin/node /home/ubuntu/.nvm/versions/node/v6.11.2/bin/yarn test
+
+PATH: 
+  /home/ubuntu/.nvm/versions/node/v6.11.2/bin:/usr/local/rvm/gems/ruby-2.4.0/bin:/usr/local/rvm/gems/ruby-2.4.0@global/bin:/usr/local/rvm/rubies/ruby-2.4.0/bin:/mnt/shared/bin:/home/ubuntu/workspace/node_modules/.bin:/home/ubuntu/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/mnt/shared/sbin:/opt/gitl:/opt/go/bin:/mnt/shared/c9/app.nw/bin:/usr/local/rvm/bin
+
+Yarn version: 
+  1.5.1
+
+Node version: 
+  6.11.2
+
+Platform: 
+  linux x64
+
+npm manifest: 
+  {
+    "name": "rtcfly",
+    "author": "rtcfly",
+    "version": "1.0.0",
+    "description": "Stable, fun, WebRTC",
+    "scripts": {
+      "dist": "npm run lint && tsc",
+      "lint": "tslint -c tslint.json 'src/**/*.ts'",
+      "test": "yarn lint && jest"
+  
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/RTCFly/RTCFly"
+    },
+    "bugs": {
+      "url": "https://github.com/RTCFly/RTCFly/issues"
+    },
+    "main": "dist/index.js",
+    "license": "MIT",
+    "keywords": [
+      "webrtc"
+    ],
+    "analyze": true,
+    "devDependencies": {
+      "@types/node": "^9.4.6",
+      "jest": "^22.4.2",
+      "tslint": "^5.9.1",
+      "typescript": "^2.7.2"
+    },
+    "dependencies": {
+      "inversify": "^4.10.0",
+      "reflect-metadata": "^0.1.12"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
+
+Trace: 
+  Error: Command failed.
+  Exit code: 1
+  Command: sh
+  Arguments: -c yarn lint && jest
+  Directory: /home/ubuntu/workspace/RTCFly
+  Output:
+  
+      at ProcessTermError.Error (native)
+      at ProcessTermError.MessageError (/home/ubuntu/.nvm/versions/node/v6.11.2/lib/node_modules/yarn/lib/cli.js:186:110)
+      at new ProcessTermError (/home/ubuntu/.nvm/versions/node/v6.11.2/lib/node_modules/yarn/lib/cli.js:226:113)
+      at ChildProcess.<anonymous> (/home/ubuntu/.nvm/versions/node/v6.11.2/lib/node_modules/yarn/lib/cli.js:30281:17)
+      at emitTwo (events.js:106:13)
+      at ChildProcess.emit (events.js:191:7)
+      at maybeClose (internal/child_process.js:891:16)
+      at Process.ChildProcess._handle.onexit (internal/child_process.js:226:5)
