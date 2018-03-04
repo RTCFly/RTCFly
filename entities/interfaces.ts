@@ -10,13 +10,15 @@ export interface IDataChannel {
     
 }
 export interface IRTCService {
-    initSession(config:IRTCConfiguration);
+    init(config:IRTCConfiguration);
+    initSession(params:any);
     getDevices();
 }
 
 export interface IMessenger {
     register(config:IClientConfig);
-    invite();
+    invite(id:string);
+    //Sip Methods
     ack();
     cancel();
     options();
@@ -28,18 +30,35 @@ export interface IMessenger {
     refer();
     message();
     update();
-    on(event:string, callback:Function);
+    
+    //Custom
+    answer();
+    reject();
+    
+    on(action:string, callback:Function);
 }
 export interface IMediaWrapper {
-    getLocalVideo():IVideoWrapper;
-    getRemoteVideo():IVideoWrapper;
+    localVideo:IVideoWrapper;
+    remoteVideo:IVideoWrapper;
+    setVideoElements(elements:any);
+}
+
+export interface IVideoWrapper {
+    streamMuted :boolean;
+    toggleMute ():void;
+    getElement(): IHTMLMediaElement;
+    pause() : void;
+    play(): Promise<any> ;
+    setStream(stream: IMediaStream, muted? : boolean) : void ;
+    stop():void;
 }
 export interface IWindowWebSocket{
     close();
     send();
 }
 export interface IWebClient {
-    handleMessage();
+    sendMessage();
+    recieveMessage();
     
 }
 export interface IIPService {
@@ -55,7 +74,7 @@ export interface ICallParams {
 }
 
 export interface IHTMLMediaElement{
-     play() : void;
+     play() : Promise<any>;
      pause() : void;
      paused: boolean;
      muted: boolean;
@@ -83,4 +102,5 @@ export interface IClientConfig {
 export interface IErrorService {
     missingConfig();
     invalidConfig(missingField:string);
+    invalidCallTarget(callTarget:string);
 }

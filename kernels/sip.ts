@@ -13,13 +13,11 @@ import { WebRTC } from '@rtcfly/rtc';
 import { WebSockets } from '@rtcfly/webclient';
 import { ErrorService } from '@rtcfly/error';
 
-const WindowWebSocket = window["WebSocket"];
 
 const sipContainer = new Container();
 sipContainer.bind<IMessenger>(TYPES.Messenger).to(SipMessenger);
 sipContainer.bind<IUserAgent>(TYPES.UserAgent).to(UserAgent);
 sipContainer.bind<IRTCService>(TYPES.RTCService).to(WebRTC);
-sipContainer.bind<IWindowWebSocket>(TYPES.WindowWebSocket).to(WindowWebSocket);
 sipContainer.bind<IWebClient>(TYPES.WebClient).to(WebSockets);
 sipContainer.bind<IErrorService>(TYPES.ErrorService).to(ErrorService);
 

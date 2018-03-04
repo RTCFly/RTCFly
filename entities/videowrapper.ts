@@ -1,10 +1,13 @@
-export class VideoWrapper {
+import { IHTMLMediaElement, IMediaStream, IVideoWrapper }  from '@rtcfly/interfaces';
+export class VideoWrapper implements IVideoWrapper {
     /**
      * Wrap video to allow stabler manipulation
      * @param video {HTMLElement}
      */
     private element: IHTMLMediaElement;
     private stream: any;
+    
+    public streamMuted :boolean;
     constructor ( video: IHTMLMediaElement ){
         if( !video ) {
             throw new Error( "Video element not found" );
@@ -12,7 +15,12 @@ export class VideoWrapper {
             this.element = video;
         }
     }
-
+    
+    public toggleMute (){
+        if(this.stream){
+            this.stream.getAudioTracks().forEach(stream=>stream.enabled = !stream.enabled);
+        }
+    }
     /**
      * Get the raw video element
      * @returns {IHTMLMediaElement}
@@ -32,14 +40,14 @@ export class VideoWrapper {
     /**
      * Play the video element
      */
-    public async play() {
-        return await this.element.play();
+    public  play(): Promise<any> {
+        return  this.element.play();
     }
 
     /**
      * Set the video stream
      * @param stream {MediaStream}
-     * @param muted {boolean}
+     * @param muted {boolean} whether to set the video element muted attribute
      */
     public setStream(stream: IMediaStream, muted? : boolean) : void {
         this.element.srcObject = stream;

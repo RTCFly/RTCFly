@@ -5,9 +5,14 @@ import { IWebClient,
 @injectable()
 export class WebSocketsClient implements IWebClient {
     
-    @inject(TYPES.WindowWebSocket) private _windowWebSocket : IWindowWebSocket;
+    private _connection:any;
+    connect(server:string){}
     
-    handleMessage(){
+    recieveMessage(){
+        
+    }
+    
+    sendMessage(){
         
     }
     

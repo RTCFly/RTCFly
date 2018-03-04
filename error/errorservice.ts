@@ -6,4 +6,7 @@ export class ErrorService implements IErrorService {
     invalidConfig(missingField:string){
         throw new Error(`Config missing field ${missingField}`);
     }
+    invalidCallTarget(callTarget:string){
+        throw new Error(`Invalid call target ${callTarget}`);
+    }
 }

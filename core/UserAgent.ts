@@ -19,22 +19,32 @@ export class UserAgent implements IUserAgent {
     @inject(TYPES.ErrorService) private _errorService: IErrorService;
     
     call(params:ICallParams): void{
-        //TODO implement user agent call
-    }; 
+        this._rtcService.initSession({
+            localElement:params.localElement,
+            remoteElement:params.remoteElement
+        });
+        if(params.id === undefined){
+            this._errorService.invalidCallTarget(params.id);
+        }
+        this._messenger.invite(params.id);
+    } 
     answer(params:ICallParams): void{
-        //TODO implement user agent answer
-    };
+        this._rtcService.initSession({
+            localElement:params.localElement,
+            remoteElement:params.remoteElement
+        });
+        this._messenger.answer();
+    }
     reject(): void{
-        //TODO implement user agent reject
-    }; 
+        this._messenger.reject();
+    }
     createDataChannel():IDataChannel{
-        //TODO implement user agent createDataChannel
         return {} as IDataChannel;
-    };
+    }
     init(configuration:IRTCSession): void{
-        this._rtcService.initSession(configuration.rtcConfiguration);
+        this._rtcService.init(configuration.rtcConfiguration);
         this._messenger.register(configuration.clientConfig);
-    }; 
+    } 
     
     getMessenger() :IMessenger{
         return this._messenger;
