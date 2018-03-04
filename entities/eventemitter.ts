@@ -1,4 +1,4 @@
-class EventEmitter {
+export class EventEmitter {
     private _events :any ={};
     protected on(action:string, callback:Function):void{
         this._events[action] = callback;

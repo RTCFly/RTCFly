@@ -5,7 +5,10 @@ import { IWebClient } from '@rtcfly/interfaces';
 export class LocalClient implements IWebClient {
     
     
-    handleMessage(){
+    recieveMessage(){
+        
+    }
+    sendMessage(){
         
     }
     

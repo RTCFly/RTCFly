@@ -56,4 +56,7 @@ export class SipMessenger extends EventEmitter implements IMessenger {
     reject(){
         
     }
+    on(action:string, callback:Function){
+        super.on(action, callback);
+    }
 }

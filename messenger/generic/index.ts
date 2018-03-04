@@ -8,42 +8,45 @@ export class GenericMessenger extends EventEmitter implements IMessenger{
     @inject(TYPES.WebClient) private _webClient: IWebClient;
     
     register(config:IClientConfig){
-        this.emit('REGISTER');
+        super.emit('REGISTER');
     }
     invite(){
-        this.emit('INVITE');
+        super.emit('INVITE');
     }
     ack(){
-        this.emit('ACK');
+        super.emit('ACK');
     }
     cancel(){
-        this.emit('CANCEL');
+        super.emit('CANCEL');
     }
     options(){
-        this.emit('OPTIONS');
+        super.emit('OPTIONS');
     }
     prack(){
-        this.emit('PRACK');
+        super.emit('PRACK');
     }
     subscribe(){
-        this.emit('SUBSCRIBE');
+        super.emit('SUBSCRIBE');
     }
     notify(){
-        this.emit('NOTIFY');
+        super.emit('NOTIFY');
     }
     publish(){
-        this.emit('PUBLISH');
+        super.emit('PUBLISH');
     }
     info(){
-        this.emit('INFO');
+        super.emit('INFO');
     }
     refer(){
-        this.emit('REFER');
+        super.emit('REFER');
     }
     message(){
-        this.emit('MESSAGE');
+        super.emit('MESSAGE');
     }
     update(){
-        this.emit('UPDATE');
+        super.emit('UPDATE');
+    }
+    on(action:string, callback:Function){
+        super.on(action, callback);
     }
 }
