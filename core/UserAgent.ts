@@ -14,24 +14,35 @@ import { IUserAgent,
 @injectable()
 export class UserAgent implements IUserAgent {
     
-    @inject(TYPES.Messenger) private _messenger: IMessageHandler;
-    @inject(TYPES.RTCService) private _rtcService :IRTCService;
-    @inject(TYPES.ErrorService) private _errorService: IErrorService;
+    private _messenger: IMessageHandler;
+    private _rtcService :IRTCService;
+    private _errorService: IErrorService;
     
     
+     public constructor(
+	    @inject(TYPES.Messenger) messenger: IMessageHandler,
+	    @inject(TYPES.RTCService) rtcService: IRTCService,
+	    @inject(TYPES.ErrorService) errorService: IErrorService
+    ) {
+        this._messenger = messenger;
+        this._rtcService = rtcService;
+        this._errorService = errorService;
+        
+        this._rtcService.on('iceCandidate', iceCandidate => 
+           this._messenger.iceCandidate(iceCandidate));
+    }
     
     
     call(params:ICallParams): void{
-        this._rtcService.initSession({
-            localElement:params.localElement,
-            remoteElement:params.remoteElement
-        });
+        params.caller = true;
+        this._rtcService.initSession(params);
         if(params.id === undefined){
             this._errorService.invalidCallTarget(params.id);
         }
         this._messenger.invite(params.id);
     } 
     answer(params:ICallParams): void{
+        params.caller = false;
         this._rtcService.initSession({
             localElement:params.localElement,
             remoteElement:params.remoteElement

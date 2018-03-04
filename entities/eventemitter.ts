@@ -1,4 +1,5 @@
-export class EventEmitter {
+import { IEventEmitter } from '@rtcfly/interfaces';
+export class EventEmitter implements IEventEmitter {
     private _events :any ={};
     protected on(action:string, callback:Function):void{
         this._events[action] = callback;

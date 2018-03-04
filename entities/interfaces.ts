@@ -9,10 +9,32 @@ export interface IUserAgent {
 export interface IDataChannel {
     
 }
-export interface IRTCService {
+export interface IFlyAdapter {
+    
+  RTCPeerConnection();
+  RTCDataChannel();
+  RTCDataChannelEvent();
+  RTCSessionDescription(); 
+  RTCSessionDescriptionCallback();
+  RTCStatsReport();
+  RTCIceCandidate(); 
+  RTCPeerConnectionIceEvent();
+  RTCRtpSender(); 
+  RTCRtpReceiver();
+  RTCRtpContributingSource(); 
+  RTCConfiguration();
+  RTCSctpTransport();
+  RTCIdentityAssertion();
+  RTCIdentityEvent();
+  RTCIdentityErrorEvent();
+  RTCCertificate();
+  getUserMedia();
+}
+export interface IRTCService extends IEventEmitter {
     init(config:IRTCConfiguration);
     initSession(params:any);
     getDevices();
+    on(action:string, callback:Function);
 }
 
 export interface IMessageHandler {
@@ -34,6 +56,7 @@ export interface IMessageHandler {
     //Custom
     answer();
     reject();
+    iceCandidate();
     
     on(action:string, callback:Function);
 }
@@ -71,6 +94,7 @@ export interface ICallParams {
     remoteElement: IHTMLMediaElement;
     video:boolean; 
     audio:boolean; 
+    caller?:boolean;
 }
 
 export interface IHTMLMediaElement{

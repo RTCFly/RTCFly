@@ -21,4 +21,13 @@ export default class MediaWrapper implements IMediaWrapper {
         }
     }
     
+    setVideoStream(streams:any){
+        if(streams.localStream && this.localVideo){
+            this.localVideo.setStream(streams.localStream, true);
+        }
+        if(streams.remoteStream && this.remoteVideo){
+            this.remoteVideo.setStream(streams.remoteStream, false);
+        }
+    }
+    
 }

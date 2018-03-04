@@ -56,6 +56,9 @@ export class SipMessenger extends EventEmitter implements IMessageHandler {
     reject(){
         
     }
+    iceCandidate(){
+        
+    }
     on(action:string, callback:Function){
         super.on(action, callback);
     }

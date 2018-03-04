@@ -1,4 +1,5 @@
 import { Container } from "inversify";
+import { FlyAdapterClass } from "flyadapter";
 import { TYPES } from "@rtcfly/types";
 import { IUserAgent, 
          IMessageHandler, 
@@ -6,6 +7,7 @@ import { IUserAgent,
          IIPService, 
          IRTCService, 
          IErrorService,
+         IFlyAdapter,
          IWindowWebSocket } from "@rtcfly/interfaces";
 import { SipMessenger } from '@rtcfly/messenger';
 import { UserAgent } from '@rtcfly/core';
@@ -19,6 +21,7 @@ sipContainer.bind<IMessageHandler>(TYPES.Messenger).to(SipMessenger);
 sipContainer.bind<IUserAgent>(TYPES.UserAgent).to(UserAgent);
 sipContainer.bind<IRTCService>(TYPES.RTCService).to(WebRTC);
 sipContainer.bind<IWebClient>(TYPES.WebClient).to(WebSockets);
+sipContainer.bind<IFlyAdapter>(TYPES.FlyAdapter).to(FlyAdapterClass);
 sipContainer.bind<IErrorService>(TYPES.ErrorService).to(ErrorService);
 
 

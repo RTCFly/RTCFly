@@ -50,6 +50,7 @@ export class VideoWrapper implements IVideoWrapper {
      * @param muted {boolean} whether to set the video element muted attribute
      */
     public setStream(stream: IMediaStream, muted? : boolean) : void {
+        this.pause();
         this.element.srcObject = stream;
         this.stream = stream; 
         if( muted !== undefined ) {
@@ -57,6 +58,7 @@ export class VideoWrapper implements IVideoWrapper {
         } else {
             this.element.muted = false;
         }
+        this.play();
     }
     public stop(){
         if(this.stream){
