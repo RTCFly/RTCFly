@@ -4,7 +4,7 @@ export interface IUserAgent {
     reject(): void; 
     createDataChannel():IDataChannel;
     init(configuration:IRTCSession): void; 
-    getMessenger(): IMessenger;
+    getMessenger(): IMessageHandler;
 }
 export interface IDataChannel {
     
@@ -15,7 +15,7 @@ export interface IRTCService {
     getDevices();
 }
 
-export interface IMessenger {
+export interface IMessageHandler {
     register(config:IClientConfig);
     invite(id:string);
     //Sip Methods

@@ -1,3 +1,3 @@
 export * from  './sip';
 
-export * from './local';
+export * from './generic';

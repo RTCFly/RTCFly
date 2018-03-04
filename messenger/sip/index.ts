@@ -1,12 +1,12 @@
 import { injectable, inject } from 'inversify';
 import { IWebClient, 
          IClientConfig,
-         IMessenger } from '@rtcfly/interfaces';
+         IMessageHandler } from '@rtcfly/interfaces';
          
 import { EventEmitter } from '@rtcfly/entities/eventemitter';
 import { TYPES } from '@rtcfly/types';
 @injectable()
-export class SipMessenger extends EventEmitter implements IMessenger {
+export class SipMessenger extends EventEmitter implements IMessageHandler {
 
     @inject(TYPES.WebClient) private _webClient: IWebClient;
     

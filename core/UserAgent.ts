@@ -2,7 +2,7 @@ import { injectable, inject } from 'inversify';
 
 import { TYPES } from '@rtcfly/types';
 import { IUserAgent, 
-        IMessenger, 
+        IMessageHandler, 
         ICallParams, 
         IRTCService, 
         IErrorService, 
@@ -14,9 +14,12 @@ import { IUserAgent,
 @injectable()
 export class UserAgent implements IUserAgent {
     
-    @inject(TYPES.Messenger) private _messenger: IMessenger;
+    @inject(TYPES.Messenger) private _messenger: IMessageHandler;
     @inject(TYPES.RTCService) private _rtcService :IRTCService;
     @inject(TYPES.ErrorService) private _errorService: IErrorService;
+    
+    
+    
     
     call(params:ICallParams): void{
         this._rtcService.initSession({
@@ -46,7 +49,7 @@ export class UserAgent implements IUserAgent {
         this._messenger.register(configuration.clientConfig);
     } 
     
-    getMessenger() :IMessenger{
+    getMessenger() :IMessageHandler{
         return this._messenger;
     }
     
