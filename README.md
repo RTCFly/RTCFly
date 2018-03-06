@@ -1,9 +1,9 @@
 # READ FIRST
 After some careful consideration, we've come to realise that RTCFly doesn't work as well as we want it to in its current form, so we have decided to rebuild. 
 
-This master branch will be branched into "Legacy" and the project will be replaced with a better one. 
+This is still being developed, but will be eventually permenantly branched into `Legacy` and replaced with a better IoC (InversifyJS) based solution.
 
-Checkout the `next` branch to see the upcoming project. 
+See the `next` branch to see the upcoming project.
 
 
 [![Travis CI](https://travis-ci.org/RTCFly/RTCFly.svg?branch=master)](https://travis-ci.org/RTCFly/RTCFly)

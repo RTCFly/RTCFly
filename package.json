@@ -1,7 +1,7 @@
 {
   "name": "rtcfly",
   "author": "rtcfly",
-  "version": "0.1.8-time-to-rebuild-check-branch-called-next",
+  "version": "0.1.9",
   "description": "Stable, fun, WebRTC",
   "repository": {
     "type": "git",
