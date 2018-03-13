@@ -5,8 +5,8 @@ export default class DataChannel {
     private name:string;
     private dataChannel:any;
     private peerConnection:any;
-    private eventMap = {}; 
     private options:any;
+    private eventMap:any = {};
     
     
     

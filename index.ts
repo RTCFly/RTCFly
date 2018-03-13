@@ -1,24 +1,24 @@
-import { getUserMedia, RTCPeerConnection } from 'flyadapter';
 
+import services from './services';
 
-import Client from './client';
+import ClientCore from './client';
 import Server from './server';
+
+
 import {MessageType, Message, MessageDirection} from './entities/Message';
+import VideoWrapper from './entities/VideoWrapper';
+import DataChannel from './DataChannel';
+const entities = {
+  VideoWrapper,
+  DataChannel,
+  MessageType,
+  Message,
+  MessageDirection
+};
 
-class RTC implements IRTC{
-    public getUserMedia;
-    public RTCPeerConnection;
-    constructor(getUserMedia, RTCPeerConnection){
-        this.getUserMedia = getUserMedia; 
-        this.RTCPeerConnection = RTCPeerConnection;
-    }
-    createPeerConnection(config){
-        return new this.RTCPeerConnection(config);
-    }
-}
-
-const client = (settings) => new Client(settings, new RTC(getUserMedia, RTCPeerConnection));
+const client = settings => new ClientCore(settings, services(), entities);
 //const server = (handler) => Server(handler);
+
 export {
     client,
   //  server,

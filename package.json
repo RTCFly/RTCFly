@@ -14,17 +14,16 @@
   "scripts": {
     "prepublish": "npm run build",
     "build": "tsc",
-    "test": "mocha -r ts-node/register test.ts",
+    "test": "mocha -r ts-node/register tests/index.ts",
     "E2E": "rm -rf E2E/testproject/src/scripts/dist && cp -a dist E2E/testproject/src/scripts && cd E2E/testproject && npm install && npm run build && cd ../.. && ./node_modules/cucumber/bin/cucumber.js E2E/features",
-    "E2E-clean": "cp -a dist E2E/testproject/src/scripts && cd E2E/testproject && npm install && npm run build && cd ../.. && ./node_modules/cucumber/bin/cucumber.js E2E/features/RTCFly_V1.feature",
-    "E2E-win": "node node_modules\\cucumber\\bin\\cucumber.js E2E\\features\\RTCFly_V1.feature"
+    "E2E-clean": "toolchain/E2E.sh"
   },
   "license": "MIT",
   "dependencies": {
     "@types/node": "^8.0.31",
     "@types/sinon": "^2.3.5",
     "chai-spies": "^0.7.1",
-    "flyadapter": "0.1.1",
+    "flyadapter": "0.1.3",
     "loglevel": "^1.6.1"
   },
   "devDependencies": {

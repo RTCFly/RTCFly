@@ -14,6 +14,17 @@ const window = {
 
 export default (expect :any, assert : any) => {
     describe('calls',() => {
+        
+        
+        describe('getDevices returns list of devices', () => {
+            
+            (async function(){
+                const client = new Client({}, rtc); 
+                console.log(await client.getDevices());
+            })();
+          
+        });
+        
         const params = [{
             description: 'with no video elements',
             localElement: undefined,

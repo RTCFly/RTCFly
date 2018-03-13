@@ -1,5 +1,13 @@
 declare interface IRTC {
-    getUserMedia(mediaConstrains:any);
+    peerConnection:IPeerConnection;
+
+    createPeerConnection(config);
     RTCPeerConnection:any; 
-    createPeerConnection(config); 
+    startCall(params:ICallParams);
+    reset();
+    handleSenderStream(message:any);
+    handleTargetAccept(message?:any);
+    createSession();
+    getLocalVideo(): IVideoWrapper;
+    getRemoteVideo(): IVideoWrapper;
 }
