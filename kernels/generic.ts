@@ -3,8 +3,7 @@ import { TYPES } from "@rtcfly/types";
 import { IUserAgent, 
          IIPService, 
          IRTCService, 
-         IErrorService,
-         IFlyAdapter } from "@rtcfly/interfaces";
+         IErrorService } from "@rtcfly/interfaces";
 import { UserAgent } from '@rtcfly/core';
 import { WebRTC } from '@rtcfly/rtc';
 import { ErrorService } from '@rtcfly/error';

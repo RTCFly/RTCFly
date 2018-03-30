@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
-        "baseUrl":".",
+        "baseUrl": ".",
         "target": "es5",
-        "lib": ["es6","DOM"],
+        "lib": ["es6", "DOM"],
         "types": ["reflect-metadata"],
         "module": "commonjs",
         "moduleResolution": "node",
@@ -12,8 +12,15 @@
         "paths": {
             "@rtcfly/interfaces": ["entities/interfaces.ts"],
             "@rtcfly/types": ["entities/types.ts"],
-            "@rtcfly/*":["./"]
-            
+            "@rtcfly/entities":["entities"],
+            "@rtcfly/core": ["core"],
+            "@rtcfly/rtc": ["rtc/*"],
+            "@rtcfly/error": ["error"],
+            "@rtcfly/messenger": ["messenger"],
+            "@rtcfly/rtc": ["rtc"],
+            "@rtcfly/webclient": ["webclient"],
+            "@rtcfly/error": ["error"]
+
         }
     }
 }

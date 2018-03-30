@@ -3,7 +3,6 @@ import { IRTCConfiguration,
          IRTCService,
          IMediaWrapper,
          ICallParams,
-         IFlyAdapter,
          IMediaDevice } from '@rtcfly/interfaces';
 import { TYPES } from '@rtcfly/types';
 import { EventEmitter } from '@rtcfly/entities/eventemitter';
@@ -40,7 +39,7 @@ export default class WebRTC extends EventEmitter implements IRTCService {
                         localStream
                     })).then(()=>{
                         this.initPeerConnection(params, resolve, localStream);
-                    });
+                    }));
             } else {
                 this.initPeerConnection(params, resolve)
             }

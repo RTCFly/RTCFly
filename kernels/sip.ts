@@ -7,7 +7,6 @@ import { IUserAgent,
          IIPService, 
          IRTCService, 
          IErrorService,
-         IFlyAdapter,
          IWindowWebSocket } from "@rtcfly/interfaces";
 import { SipMessenger } from '@rtcfly/messenger';
 import { UserAgent } from '@rtcfly/core';

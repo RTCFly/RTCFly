@@ -9,32 +9,36 @@ export interface IUserAgent {
 export interface IDataChannel {
     
 }
-export interface IFlyAdapter {
+// export interface IFlyAdapter {
     
-  RTCPeerConnection();
-  RTCDataChannel();
-  RTCDataChannelEvent();
-  RTCSessionDescription(); 
-  RTCSessionDescriptionCallback();
-  RTCStatsReport();
-  RTCIceCandidate(); 
-  RTCPeerConnectionIceEvent();
-  RTCRtpSender(); 
-  RTCRtpReceiver();
-  RTCRtpContributingSource(); 
-  RTCConfiguration();
-  RTCSctpTransport();
-  RTCIdentityAssertion();
-  RTCIdentityEvent();
-  RTCIdentityErrorEvent();
-  RTCCertificate();
-  getUserMedia();
-}
+//   RTCPeerConnection();
+//   RTCDataChannel();
+//   RTCDataChannelEvent();
+//   RTCSessionDescription(); 
+//   RTCSessionDescriptionCallback();
+//   RTCStatsReport();
+//   RTCIceCandidate(); 
+//   RTCPeerConnectionIceEvent();
+//   RTCRtpSender(); 
+//   RTCRtpReceiver();
+//   RTCRtpContributingSource(); 
+//   RTCConfiguration();
+//   RTCSctpTransport();
+//   RTCIdentityAssertion();
+//   RTCIdentityEvent();
+//   RTCIdentityErrorEvent();
+//   RTCCertificate();
+//   getUserMedia();
+// }
 export interface IRTCService extends IEventEmitter {
     init(config:IRTCConfiguration);
     initSession(params:any);
     getDevices();
     on(action:string, callback:Function);
+}
+export interface IEventEmitter {
+  on(action:string, callback:Function):void;
+  emit(action:string, data?:any): void
 }
 
 export interface IMessageHandler {
@@ -56,7 +60,7 @@ export interface IMessageHandler {
     //Custom
     answer();
     reject();
-    iceCandidate();
+    iceCandidate(iceCandidate:any);
     
     on(action:string, callback:Function);
 }
