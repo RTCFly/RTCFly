@@ -35,10 +35,11 @@ export class UserAgent implements IUserAgent {
     
     call(params:ICallParams): void{
         params.caller = true;
-        this._rtcService.initSession(params);
         if(params.id === undefined){
-            this._errorService.invalidCallTarget(params.id);
+            return this._errorService.invalidCallTarget(params.id);
         }
+        this._rtcService.initSession(params).then(offer => this._messenger.invite(params.id, offer));
+
         this._messenger.invite(params.id);
     } 
     answer(params:ICallParams): void{
@@ -46,8 +47,8 @@ export class UserAgent implements IUserAgent {
         this._rtcService.initSession({
             localElement:params.localElement,
             remoteElement:params.remoteElement
-        });
-        this._messenger.answer();
+        }).then(offer => this._messenger.answer(offer));
+        
     }
     reject(): void{
         this._messenger.reject();

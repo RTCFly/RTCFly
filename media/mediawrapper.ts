@@ -1,4 +1,4 @@
-import { VideoWrapper } from '@rtcfly/entities/videowrapper';
+import { VideoWrapper } from '@rtcfly/videowrapper';
 import { IHTMLMediaElement,
          IVideoWrapper, 
          ICallParams, 

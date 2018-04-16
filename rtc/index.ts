@@ -1,4 +1,4 @@
-import { WebRTC } from './webrtc';
+import WebRTC from './webrtc';
 
 export {
     WebRTC

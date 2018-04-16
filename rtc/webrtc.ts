@@ -64,7 +64,7 @@ export default class WebRTC extends EventEmitter implements IRTCService {
             });
     }
     
-    private setupLocalSession(params:ICallParams, resolve:Promise<string>){
+    private _setupLocalSession(params:ICallParams, resolve:Promise<string>){
         if(params.caller){
             this._peerConnection.createOffer().then(offer =>{
                 this._peerConnection.setLocalDescription(offer);
@@ -83,6 +83,9 @@ export default class WebRTC extends EventEmitter implements IRTCService {
     }
     on(action:string, callback:Function){
         super.on(action, callback);
+    }
+    emit(action:string, data:any){
+        super.on(action, data);
     }
     
 }

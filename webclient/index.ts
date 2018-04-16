@@ -1,1 +1,5 @@
-export * from './websockets';
+import { WebSocketsClient as WebSockets } from './WebSockets';
+
+export { 
+  WebSockets  
+};

@@ -3,7 +3,7 @@ import { IWebClient,
          IClientConfig,
          IMessageHandler } from '@rtcfly/interfaces';
          
-import { EventEmitter } from '@rtcfly/entities/eventemitter';
+import { EventEmitter } from '@rtcfly/eventemitter';
 import { TYPES } from '@rtcfly/types';
 @injectable()
 export class SipMessenger extends EventEmitter implements IMessageHandler {

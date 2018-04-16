@@ -28,7 +28,7 @@
     "typescript": "^2.7.2"
   },
   "dependencies": {
-    "flyadapter": "^0.1.5-alpha",
+    "flyadapter": "^0.1.6",
     "inversify": "^4.10.0",
     "reflect-metadata": "^0.1.12"
   }
