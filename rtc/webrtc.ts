@@ -75,7 +75,7 @@ export default class WebRTC extends EventEmitter implements IRTCService {
     
     public getDevices():Promise<Array<IMediaDevice>>{
         return this._flyAdapter.enumerateDevices().then((devices:any) =>{
-            
+            //convert to IMediaDevice
         });
     }
     getMedia():IMediaWrapper{
