@@ -793,6 +793,13 @@ find-up@^2.1.0:
   dependencies:
     locate-path "^2.0.0"
 
+flyadapter@^0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/flyadapter/-/flyadapter-0.1.6.tgz#8f2f335d269464121c629a0591ad63e07deb8c5d"
+  dependencies:
+    rtcpeerconnection-shim "^1.2.3"
+    webrtc-adapter "*"
+
 for-in@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/for-in/-/for-in-1.0.2.tgz#81068d295a8142ec0ac726c6e2200c30fb6d5e80"
@@ -2269,6 +2276,12 @@ rimraf@2, rimraf@^2.5.1, rimraf@^2.5.4, rimraf@^2.6.1:
   dependencies:
     glob "^7.0.5"
 
+rtcpeerconnection-shim@^1.2.10, rtcpeerconnection-shim@^1.2.3:
+  version "1.2.13"
+  resolved "https://registry.yarnpkg.com/rtcpeerconnection-shim/-/rtcpeerconnection-shim-1.2.13.tgz#326e316b06e8b96b40f7558c8f582b86dd2c1b46"
+  dependencies:
+    sdp "^2.6.0"
+
 safe-buffer@^5.0.1, safe-buffer@^5.1.1, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.1.tgz#893312af69b2123def71f57889001671eeb2c853"
@@ -2290,6 +2303,10 @@ sane@^2.0.0:
 sax@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
+
+sdp@^2.6.0, sdp@^2.7.0:
+  version "2.7.4"
+  resolved "https://registry.yarnpkg.com/sdp/-/sdp-2.7.4.tgz#cac76b0e2f16f55243d25bc0432f6bbb5488bfc1"
 
 "semver@2 || 3 || 4 || 5", semver@^5.3.0, semver@^5.4.1:
   version "5.5.0"
@@ -2664,6 +2681,13 @@ watch@~0.18.0:
 webidl-conversions@^4.0.1, webidl-conversions@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-4.0.2.tgz#a855980b1f0b6b359ba1d5d9fb39ae941faa63ad"
+
+webrtc-adapter@*:
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/webrtc-adapter/-/webrtc-adapter-6.3.0.tgz#21083775b30320b8f73f37d92396896bdfc18ad8"
+  dependencies:
+    rtcpeerconnection-shim "^1.2.10"
+    sdp "^2.7.0"
 
 whatwg-encoding@^1.0.1, whatwg-encoding@^1.0.3:
   version "1.0.3"
