@@ -7,7 +7,9 @@ const TYPES = {
     WindowWebSocket: Symbol.for("WindowWebSocket"),
     ErrorService: Symbol.for("ErrorService"),
     MediaWrapper: Symbol.for("MediaWrapper"),
-    FlyAdapter: Symbol.for("FlyAdapter")
+    FlyAdapter: Symbol.for("FlyAdapter"),
+    Dialog: Symbol.for("Dialog"),
+    DialogFactory: Symbol.for("DialogFactory")
 };
 
 export { TYPES };

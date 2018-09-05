@@ -1,10 +1,12 @@
+import { UserAgentEventEnum } from '@rtcfly/user-agent-event.enum';
 export interface IUserAgent {
     call(params:ICallParams): void; 
-    answer(params:ICallParams): void;
-    reject(): void; 
-    createDataChannel():IDataChannel;
     init(configuration:IRTCSession): void; 
-    getMessenger(): IMessageHandler;
+    on(action:UserAgentEventEnum, callback:(dialog:IDialog)=> void);
+
+}
+export interface IUserAgentEvent {
+    
 }
 export interface IDataChannel {
     
@@ -34,15 +36,17 @@ export interface IRTCService extends IEventEmitter {
     init(config:IRTCConfiguration);
     initSession(params:any);
     getDevices();
-    on(action:string, callback:Function);
 }
 export interface IEventEmitter {
   on(action:string, callback:Function):void;
   emit(action:string, data?:any): void
 }
+export interface IAgentStreamEvent {
+    
+}
 
-export interface IMessageHandler {
-    register(config:IClientConfig);
+export interface IMessenger {
+    register(config:IClientConfig): Promise<(event:IAgentStreamEvent)=>void>;
     invite(id:string);
     //Sip Methods
     ack();
@@ -61,8 +65,15 @@ export interface IMessageHandler {
     answer();
     reject();
     iceCandidate(iceCandidate:any);
-    
     on(action:string, callback:Function);
+}
+export interface IDialogFactory {
+    createAnswer(offer): IDialog;
+    createInvite(userId: string|number): IDialog;
+}
+export interface IInviteDto {
+    sdp:string; 
+    dialogId:string|number;
 }
 export interface IMediaWrapper {
     localVideo:IVideoWrapper;
@@ -86,7 +97,10 @@ export interface IWindowWebSocket{
 export interface IWebClient {
     sendMessage();
     recieveMessage();
-    
+}
+export interface IDialog {
+    getId(): string|number;
+    on(action:DialogEventsEnum, callback:Function);
 }
 export interface IIPService {
     getIP():string;
