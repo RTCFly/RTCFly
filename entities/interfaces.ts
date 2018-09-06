@@ -34,7 +34,7 @@ export interface IDataChannel {
 // }
 export interface IRTCService extends IEventEmitter {
     init(config:IRTCConfiguration);
-    initSession(params:any);
+    createSession(dialogId:string, callParams:ICallParams);
     getDevices();
 }
 export interface IEventEmitter {
@@ -47,7 +47,7 @@ export interface IAgentStreamEvent {
 
 export interface IMessenger {
     register(config:IClientConfig): Promise<(event:IAgentStreamEvent)=>void>;
-    invite(id:string);
+    invite(dialogId:string, sdp:string, targetId:string);
     //Sip Methods
     ack();
     cancel();
@@ -101,18 +101,25 @@ export interface IWebClient {
 export interface IDialog {
     getId(): string|number;
     on(action:DialogEventsEnum, callback:Function);
+    answer(); 
+    reject();
 }
 export interface IIPService {
     getIP():string;
 }
 
 export interface ICallParams {
-    id:string; 
+    targetId:string; 
     localElement: IHTMLMediaElement;
     remoteElement: IHTMLMediaElement;
     video:boolean; 
-    audio:boolean; 
-    caller?:boolean;
+    audio:boolean;
+}
+
+export interface IRTCSession {
+    setLocalStream(stream:any): void;
+    getOffer(): string;
+    setAnswer(sdp:string): void;
 }
 
 export interface IHTMLMediaElement{

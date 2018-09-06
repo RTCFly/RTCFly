@@ -1,3 +1,3 @@
-export enum AgentStreamEventEnum {
+export enum UserAgentEventEnum {
     ReceivingCall = "ReceivingCall"
 }

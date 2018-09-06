@@ -13,7 +13,7 @@ import { UserAgentEventEnum } from '@rtcfly/user-agent-event.enum';
 
 
 @injectable()
-export class UserAgent extends EventEmitter implements IUserAgent {
+export class UserAgent extends events.EventEmitter implements IUserAgent {
     
     @inject(TYPES.Messenger) private _messenger: IMessenger;
     @inject(TYPES.ErrorService) private _errorService: IErrorService;
@@ -27,13 +27,9 @@ export class UserAgent extends EventEmitter implements IUserAgent {
         return this._dialogFactory.createInvite(params);
     } 
     
-    
-    public init(configuration:IRTCSession): void{
+    public async init(configuration:IRTCSession): void{
         this._rtcService.init(configuration.rtcConfiguration);
         const agentStream = await this._messenger.register(configuration.clientConfig);
+        agentStream.on(AgentStreamEventEnum.ReceivingCall, dialog => this.emit(UserAgentEventEnum.ReceivingCall, dialog));
     } 
-    public on(action:UserAgentEventEnum, callback:(userAgentEvent:IUserAgentEvent)=> void): void {
-        
-    };
-
 }

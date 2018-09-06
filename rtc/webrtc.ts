@@ -11,17 +11,36 @@ export default class WebRTC extends EventEmitter implements IRTCService {
     
     @inject(TYPES.MediaWrapper) private _mediaWrapper: IMediaWrapper;
     @inject(TYPES.FlyAdapter) private _flyAdapter:IFlyAdapter;
+    @inject(TYPES.Messenger) private _messenger: IMessenger;
     private _config:IRTCConfiguration;
     
-    private _peerConnection:any;
-    
+
     init(config: IRTCConfiguration){
         this._config = config;
     }
-    /**
-     * Initialise the local call session  
-     * 
-     */
+    
+    
+    public async createSession(this._dialogId, callParams:ICallParams, inviteDto:?IInviteDto): IRTCSession {
+        
+        const stream = await this._flyAdapter.getUserMedia({
+            video: !!callParams.video,
+            audio: !!callParams.audio
+        });
+        
+        if(callParams.localElement !== undefined) {
+            localElement.srcObject = stream;
+        }
+        
+        const peerConnection: IRTCPeerConnection = new this._flyAdapter.RTCPeerConnection(this._config);
+        const peerConnectionSession = new WebRTCSession({
+            messenger:this._messenger
+        }, dialogId, peerConnection, callParams);
+        peerConnectionSession.setLocalStream(stream);
+        return peerConnectionSession;
+    }
+    
+    
+    
     public initSession(params:ICallParams):Promise<string>{ 
         return new Promise((resolve, reject) => {
             

@@ -58,6 +58,7 @@ declare interface IRTCPeerConnection {
   pendingRemoteDescription:IRTCSessionDescription;
   remoteDescription:IRTCSessionDescription;
   sctp:IRTCSctpTransport;
+  setRemoteDescription(answer:string): void; 
   canTrickleIceCanidates:boolean; 
   signallingState:string;
   

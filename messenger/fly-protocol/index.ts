@@ -19,58 +19,75 @@ export class FlyProtocolMessenger extends EventEmitter implements IMessenger {
             userId
         });
     }
-    invite(targetId:string|number): IDialog {
+    
+    invite(dialogId:string, sdp:string, targetId:string): IDialog {
         
     }
+    
     ack(dialogId: string|number){
         this._webClient.sendMessage({
             type:MessageTypeEnum.ack,
             dialogId
         });
     }
+    
     cancel(dialogId: string|number){
         this._webClient.sendMessage({
             type:MessageTypeEnum.cancel,
             dialogId
         });
     }
+    
     options(){
         
     }
+    
     prack(){
         
     }
+    
     subscribe(){
         
     }
+    
     notify(){
         
     }
+    
     publish(){
         
     }
+    
     info(){
         
     }
+    
     refer(){
         
     }
+    
     message(){
         
     }
+    
     update(){
         
     }
+    
     answer(){
         
     }
+    
     reject(){
         
     }
+    
     iceCandidate(){
         
     }
+    
     on(action:string, callback:Function){
         super.on(action, callback);
     }
+    
 }
